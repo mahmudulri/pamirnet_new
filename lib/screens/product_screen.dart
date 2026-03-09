@@ -9,6 +9,7 @@ import '../controllers/service_controller.dart';
 import '../global_controller/font_controller.dart';
 import '../global_controller/languages_controller.dart';
 import '../global_controller/page_controller.dart';
+import '../services/service_screen.dart';
 import '../utils/colors.dart';
 import '../widgets/button_one.dart';
 import 'country_selection.dart';
@@ -61,156 +62,96 @@ class NewServiceScreen extends StatelessWidget {
         decoration: BoxDecoration(gradient: AppColors.primaryGradient),
         height: screenHeight,
         width: screenWidth,
-        child: Container(
-          height: screenHeight,
-          width: screenWidth,
-          child: Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Expanded(
-              child: Container(
-                width: screenWidth,
-                child: Obx(
-                  () => categorisListController.isLoading.value == false
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: GridView.builder(
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount:
-                                            3, // Number of columns in the grid
-                                        crossAxisSpacing:
-                                            7.0, // Spacing between columns
-                                        mainAxisSpacing:
-                                            7.0, // Spacing between rows
-                                        childAspectRatio: 1.0,
-                                      ),
-                                  itemCount: categorisListController
-                                      .allcategorieslist
-                                      .value
-                                      .data!
-                                      .servicecategories!
-                                      .length,
-                                  itemBuilder: (context, index) {
-                                    final data = categorisListController
-                                        .allcategorieslist
-                                        .value
-                                        .data!
-                                        .servicecategories![index];
-                                    final color =
-                                        mycolor[index % mycolor.length];
-                                    final icon = icons[index % icons.length];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        box.write(
-                                          "service_category_id",
-                                          categorisListController
-                                              .allcategorieslist
-                                              .value
-                                              .data!
-                                              .servicecategories![index]
-                                              .id,
-                                        );
+        child: Obx(
+          () => categorisListController.isLoading.value == false
+              ? GridView.builder(
+                  physics: BouncingScrollPhysics(),
+                  padding: EdgeInsets.all(12),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 7,
+                    mainAxisSpacing: 7,
+                    childAspectRatio: 1.0,
+                  ),
+                  itemCount: categorisListController
+                      .allcategorieslist
+                      .value
+                      .data!
+                      .servicecategories!
+                      .length,
+                  itemBuilder: (context, index) {
+                    final data = categorisListController
+                        .allcategorieslist
+                        .value
+                        .data!
+                        .servicecategories![index];
 
-                                        if (data.type.toString() ==
-                                            "nonsocial") {
-                                          // mypagecontroller.changePage(
-                                          //   InternetPack(),
-                                          //   isMainPage: false,
-                                          // );
+                    final color = mycolor[index % mycolor.length];
+                    final icon = icons[index % icons.length];
 
-                                          showDialog(
-                                            context: context,
+                    return GestureDetector(
+                      onTap: () {
+                        box.write("service_category_id", data.id);
 
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                content: InternetPack(),
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          box.write("validity_type", "");
+                        if (data.type.toString() == "nonsocial") {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(content: InternetPack());
+                            },
+                          );
+                        } else {
+                          box.write("validity_type", "");
+                          box.write("search_tag", "");
+                          box.write("service_category_id", data.id);
+                          box.write("country_id", "");
+                          box.write("company_id", "");
 
-                                          box.write("search_tag", "");
-                                          box.write(
-                                            "service_category_id",
-                                            categorisListController
-                                                .allcategorieslist
-                                                .value
-                                                .data!
-                                                .servicecategories![index]
-                                                .id,
-                                          );
-
-                                          box.write("country_id", "");
-                                          box.write("company_id", "");
-
-                                          mypagecontroller.changePage(
-                                            SocialBundles(),
-                                            isMainPage: false,
-                                          );
-
-                                          // mypagecontroller.changePage(
-                                          //   ServiceScreen(),
-                                          //   isMainPage: false,
-                                          // );
-                                        }
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: color,
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text(
-                                              data.categoryName.toString(),
-                                              style: TextStyle(
-                                                color: Colors.grey.shade700,
-                                                fontWeight: FontWeight.w800,
-                                                fontSize: screenHeight * 0.015,
-                                                fontFamily:
-                                                    box
-                                                            .read("language")
-                                                            .toString() ==
-                                                        "Fa"
-                                                    ? Get.find<FontController>()
-                                                          .currentFont
-                                                    : null,
-                                              ),
-                                            ),
-                                            data.categoryImageUrl.toString() ==
-                                                    "null"
-                                                ? Image.asset(icon, height: 50)
-                                                : Image.network(
-                                                    data.categoryImageUrl
-                                                        .toString(),
-                                                    height: 50,
-                                                  ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Padding(
+                                padding: EdgeInsets.all(20),
+                                child: ServiceScreen(),
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              data.categoryName.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                                fontWeight: FontWeight.w800,
+                                fontSize: screenHeight * 0.015,
+                                fontFamily:
+                                    box.read("language").toString() == "Fa"
+                                    ? Get.find<FontController>().currentFont
+                                    : null,
                               ),
-                            ],
-                          ),
-                        )
-                      : Center(child: CircularProgressIndicator()),
-                ),
-              ),
-            ),
-          ),
+                            ),
+                            data.categoryImageUrl.toString() == "null"
+                                ? Image.asset(icon, height: 50)
+                                : Image.network(
+                                    data.categoryImageUrl.toString(),
+                                    height: 50,
+                                  ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : Center(child: CircularProgressIndicator()),
         ),
       ),
     );

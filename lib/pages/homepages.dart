@@ -21,6 +21,7 @@ import '../global_controller/page_controller.dart';
 import '../screens/hawala_list_screen.dart';
 import '../screens/top_up_screen.dart';
 import '../screens/withdraw_screen.dart';
+import '../widgets/customrechargebutton.dart';
 
 class Homepages extends StatefulWidget {
   Homepages({super.key});
@@ -147,40 +148,27 @@ class _HomepagesState extends State<Homepages> {
 
               SizedBox(height: 8),
 
-              Obx(
-                () => DefaultButton(
-                  buttonName: languagesController.tr("AFGHAN_RECHARGE"),
-                  mycolor: AppColors.primaryColor,
-                  onpressed: () {
-                    if (countrylistController.finalCountryList.isNotEmpty) {
-                      // Find the country where the name is "Afghanistan"
-                      var afghanistan = countrylistController.finalCountryList
-                          .firstWhere(
-                            (country) =>
-                                country['country_name'] == "Afghanistan",
-                            orElse: () => null, // Return null if not found
-                          );
-
-                      if (afghanistan != null) {
-                        print(
-                          "The ID for Afghanistan is: ${afghanistan['id']}",
+              GradientActionButton(
+                text: languagesController.tr("AFGHAN_RECHARGE"),
+                onTap: () {
+                  if (countrylistController.finalCountryList.isNotEmpty) {
+                    var afghanistan = countrylistController.finalCountryList
+                        .firstWhere(
+                          (country) => country['country_name'] == "Afghanistan",
+                          orElse: () => null,
                         );
-                        box.write("country_id", "${afghanistan['id']}");
-                        box.write("maxlength", "10");
-                      } else {
-                        print("Afghanistan not found in the list");
-                      }
-                    } else {
-                      print("Country list is empty.");
-                    }
-                    mypagecontroller.changePage(
-                      CreditTransfer(),
-                      isMainPage: false,
-                    );
-                  },
-                ),
-              ),
 
+                    if (afghanistan != null) {
+                      box.write("country_id", "${afghanistan['id']}");
+                      box.write("maxlength", "10");
+                    }
+                  }
+                  mypagecontroller.changePage(
+                    CreditTransfer(),
+                    isMainPage: false,
+                  );
+                },
+              ),
               SizedBox(height: 10),
               Container(
                 height: 85,

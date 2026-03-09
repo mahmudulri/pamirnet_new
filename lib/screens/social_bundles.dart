@@ -100,7 +100,7 @@ class _SocialBundlesState extends State<SocialBundles> {
         child: Column(
           children: [
             Container(
-              height: 120,
+              height: 50,
               width: screenWidth,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -167,111 +167,6 @@ class _SocialBundlesState extends State<SocialBundles> {
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 15),
-                    Container(
-                      height: 50,
-                      color: Colors.transparent,
-                      width: screenWidth,
-                      child: Obx(() {
-                        // Check if the allserviceslist is not null and contains data
-                        final services =
-                            serviceController
-                                .allserviceslist
-                                .value
-                                .data
-                                ?.services ??
-                            [];
-
-                        // Show all services if input is empty, otherwise filter
-                        final filteredServices = inputNumber.isEmpty
-                            ? services
-                            : services.where((service) {
-                                return service.company?.companycodes?.any((
-                                      code,
-                                    ) {
-                                      final reservedDigit =
-                                          code.reservedDigit ?? '';
-                                      return inputNumber.startsWith(
-                                        reservedDigit,
-                                      );
-                                    }) ??
-                                    false;
-                              }).toList();
-
-                        return serviceController.isLoading.value == false
-                            ? Center(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  separatorBuilder: (context, index) {
-                                    return SizedBox(width: 5);
-                                  },
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: filteredServices.length,
-                                  itemBuilder: (context, index) {
-                                    final data = filteredServices[index];
-
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          bundleController.initialpage = 1;
-                                          bundleController.finalList.clear();
-                                          selectedIndex = index;
-                                          box.write(
-                                            "company_id",
-                                            data.companyId,
-                                          );
-                                          bundleController.fetchallbundles();
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 50,
-                                        width: 65,
-                                        decoration: BoxDecoration(
-                                          color: selectedIndex == index
-                                              ? Color(0xff34495e)
-                                              : Colors.grey.shade100,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5,
-                                          ),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                data.company?.companyLogo ?? '',
-                                            placeholder: (context, url) {
-                                              print('Loading image: $url');
-                                              return Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      color: Colors.white,
-                                                    ),
-                                              );
-                                            },
-                                            errorWidget: (context, url, error) {
-                                              print(
-                                                'Error loading image: $url, error: $error',
-                                              );
-                                              return Icon(Icons.error);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                            : Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.grey,
-                                  strokeWidth: 1.0,
-                                ),
-                              );
-                      }),
                     ),
                   ],
                 ),

@@ -29,6 +29,7 @@ import '../helpers/persian_date_helper.dart';
 import '../models/currency_model.dart';
 import '../pages/transaction_type.dart';
 import '../pages/transactions.dart';
+import '../widgets/animatedproduct.dart';
 import 'notification_screen.dart';
 import 'product_screen.dart';
 
@@ -723,15 +724,7 @@ class _NewBaseScreenState extends State<NewBaseScreen> {
                                     Container(
                                       height: 48,
                                       width: 48,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                            "assets/icons/logo.png",
-                                          ),
-                                        ),
-                                      ),
+                                      child: AnimatedProductIcon(),
                                     ),
 
                                     // Image.asset(
