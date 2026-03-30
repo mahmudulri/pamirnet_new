@@ -5,6 +5,7 @@ import '../pages/network.dart';
 import '../pages/orders.dart';
 import '../pages/transaction_type.dart';
 import '../pages/transactions.dart';
+import '../screens/product_screen.dart';
 
 class Mypagecontroller extends GetxController {
   /// Navigation stack
@@ -15,10 +16,10 @@ class Mypagecontroller extends GetxController {
 
   /// Main (bottom nav) pages
   final List<Widget> mainPages = [
-    Homepages(), // index 0
-    Transactions(), // index 1
-    Orders(), // index 2
-    Network(), // index 3
+    Homepages(),
+    NewServiceScreen(),
+    Orders(),
+    Transactions(),
   ];
 
   Function(int)? updateIndexCallback;

@@ -490,7 +490,6 @@ class _HawalaListScreenState extends State<HawalaListScreen> {
                       : Center(child: CircularProgressIndicator()),
                 ),
               ),
-              SizedBox(height: 70),
             ],
           ),
         ),

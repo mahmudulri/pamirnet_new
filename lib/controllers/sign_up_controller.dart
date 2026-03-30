@@ -144,9 +144,7 @@ class SignUpController extends GetxController {
     try {
       isLoading.value = true;
 
-      final headers = {
-        'Authorization': 'Bearer ${box.read("userToken")}',
-      };
+      final headers = {'Authorization': 'Bearer ${box.read("userToken")}'};
 
       final Map<String, String> fields = {
         'reseller_name': resellerNameController.text.trim(),
@@ -165,7 +163,7 @@ class SignUpController extends GetxController {
       print(fields.toString());
 
       final url = Uri.parse(
-        "https://app-api-vpro-tt.taktelcom.com/api/public/reseller-self-register",
+        "https://app-pn-api-v1-2024.pamirnet.com/api/public/reseller-self-register",
       );
       final request = http.MultipartRequest('POST', url);
       request.headers.addAll(headers);
@@ -173,25 +171,31 @@ class SignUpController extends GetxController {
 
       // Files (optional)
       if (selectedImagePath.value.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'profile_image_url',
-          selectedImagePath.value,
-          filename: "profile.jpg",
-        ));
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'profile_image_url',
+            selectedImagePath.value,
+            filename: "profile.jpg",
+          ),
+        );
       }
       if (selectedIdentityPath.value.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'reseller_identity_attachment',
-          selectedIdentityPath.value,
-          filename: "identity.jpg",
-        ));
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'reseller_identity_attachment',
+            selectedIdentityPath.value,
+            filename: "identity.jpg",
+          ),
+        );
       }
       if (selectedExtraProofPath.value.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'extra_optional_proof',
-          selectedExtraProofPath.value,
-          filename: "extra_proof.jpg",
-        ));
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'extra_optional_proof',
+            selectedExtraProofPath.value,
+            filename: "extra_proof.jpg",
+          ),
+        );
       }
 
       final streamed = await request.send();

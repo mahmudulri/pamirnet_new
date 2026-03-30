@@ -291,5 +291,10 @@
   "PAYMENT_RECEIPT": "د تادیې رسید",
   "ENTER_ID": "شناسه را وارد کنید",
   "SAVE": "خوندي کړئ",
-  "REASON": "دلیل"
+  "REASON": "دلیل",
+  "ORDER_STATUS": "د امر حالت",
+"NETWORK_TYPE": "د شبکې ډول",
+"BUNDLE_TYPE": "د بنډل ډول",
+"VALIDITY_TYPE": "د اعتبار ډول",
+"HISTORY": "تاریخچه"
 }

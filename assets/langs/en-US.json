@@ -291,5 +291,10 @@
   "PAYMENT_RECEIPT": "Payment receipt",
   "ENTER_ID": "Enter ID",
   "SAVE": "Save",
-  "REASON": "Reason"
+  "REASON": "Reason",
+  "ORDER_STATUS": "Order Status",
+"NETWORK_TYPE": "Network Type",
+"BUNDLE_TYPE": "Bundle Type",
+"VALIDITY_TYPE": "Validity Type",
+"HISTORY": "History"
 }

@@ -1,15 +1,15 @@
 class ApiEndPoints {
-  // static String baseUrl =
-  //     "https://app-pn-api-v1-2024.pamirnet.com/api/reseller/";
-
-  // static String publicUrl =
-  //     "https://app-pn-api-v1-2024.pamirnet.com/api/public/";
-
   static String baseUrl =
-      "https://app-api-vpro-wl-waslat.milliekit.com/api/reseller/";
+      "https://app-pn-api-v1-2024.pamirnet.com/api/reseller/";
 
   static String publicUrl =
-      "https://app-api-vpro-wl-waslat.milliekit.com/api/public/";
+      "https://app-pn-api-v1-2024.pamirnet.com/api/public/";
+
+  // static String baseUrl =
+  //     "https://app-api-vpro-wl-waslat.milliekit.com/api/reseller/";
+
+  // static String publicUrl =
+  //     "https://app-api-vpro-wl-waslat.milliekit.com/api/public/";
 
   static OtherendPoints otherendpoints = OtherendPoints();
 }

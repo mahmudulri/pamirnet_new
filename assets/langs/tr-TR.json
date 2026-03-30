@@ -291,5 +291,10 @@
   "PAYMENT_RECEIPT": "Ödeme makbuzu",
   "ENTER_ID": "Kimlik girin",
   "SAVE": "Kaydet",
-  "REASON": "Sebep"
+  "REASON": "Sebep",
+  "ORDER_STATUS": "Sipariş Durumu",
+"NETWORK_TYPE": "Ağ Türü",
+"BUNDLE_TYPE": "Paket Türü",
+"VALIDITY_TYPE": "Geçerlilik Türü",
+"HISTORY": "Geçmiş"
 }

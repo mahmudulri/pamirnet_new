@@ -16,6 +16,7 @@ import '../controllers/dashboard_controller.dart';
 import '../global_controller/font_controller.dart';
 import '../helpers/capture_image_helper.dart';
 import '../helpers/share_image_helper.dart';
+import '../screens/order_details.dart';
 
 class Orders extends StatefulWidget {
   Orders({super.key});
@@ -468,55 +469,114 @@ class _OrdersState extends State<Orders> {
                                         orderlistController.finalList[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(17),
-                                              ),
-                                              insetPadding:
-                                                  EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                  ),
-                                              contentPadding: EdgeInsets.all(0),
-                                              content: DetailsDialog(
-                                                status: data.status.toString(),
-                                                bundletitle: data
-                                                    .bundle
-                                                    .bundleTitle
-                                                    .toString(),
-                                                phoneNumber: data
-                                                    .rechargebleAccount
-                                                    .toString(),
-                                                sellingPrice: data
-                                                    .bundle
-                                                    .sellingPrice
-                                                    .toString(),
-                                                buyingPrice: data
-                                                    .bundle
-                                                    .buyingPrice
-                                                    .toString(),
-                                                orderId: data.id.toString(),
-                                                imagelink: data
-                                                    .bundle
-                                                    .service
-                                                    .company
-                                                    .companyLogo
-                                                    .toString(),
-                                                date: data.createdAt.toString(),
-                                                contactname: dashboardController
-                                                    .alldashboardData
-                                                    .value
-                                                    .data!
-                                                    .userInfo!
-                                                    .contactName
-                                                    .toString(),
-                                              ),
-                                            );
-                                          },
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrderDetailsScreen(
+                                                  createDate: data.createdAt
+                                                      .toString(),
+                                                  status: data.status
+                                                      .toString(),
+                                                  rejectReason: data
+                                                      .rejectReason
+                                                      .toString(),
+                                                  companyName: data
+                                                      .bundle!
+                                                      .service!
+                                                      .company!
+                                                      .companyName
+                                                      .toString(),
+                                                  bundleTitle: data
+                                                      .bundle!
+                                                      .bundleTitle!
+                                                      .toString(),
+                                                  rechargebleAccount: data
+                                                      .rechargebleAccount!
+                                                      .toString(),
+                                                  validityType: data
+                                                      .bundle!
+                                                      .validityType!
+                                                      .toString(),
+                                                  sellingPrice: data
+                                                      .bundle!
+                                                      .sellingPrice
+                                                      .toString(),
+                                                  orderID: data.id!.toString(),
+                                                  resellerName:
+                                                      dashboardController
+                                                          .alldashboardData
+                                                          .value
+                                                          .data!
+                                                          .userInfo!
+                                                          .contactName
+                                                          .toString(),
+                                                  resellerPhone:
+                                                      dashboardController
+                                                          .alldashboardData
+                                                          .value
+                                                          .data!
+                                                          .userInfo!
+                                                          .phone
+                                                          .toString(),
+                                                  companyLogo: data
+                                                      .bundle!
+                                                      .service!
+                                                      .company!
+                                                      .companyLogo
+                                                      .toString(),
+                                                ),
+                                          ),
                                         );
+                                        // showDialog(
+                                        //   context: context,
+                                        //   builder: (context) {
+                                        //     return AlertDialog(
+                                        //       shape: RoundedRectangleBorder(
+                                        //         borderRadius:
+                                        //             BorderRadius.circular(17),
+                                        //       ),
+                                        //       insetPadding:
+                                        //           EdgeInsets.symmetric(
+                                        //             horizontal: 20,
+                                        //           ),
+                                        //       contentPadding: EdgeInsets.all(0),
+                                        //       content: DetailsDialog(
+                                        //         status: data.status.toString(),
+                                        //         bundletitle: data
+                                        //             .bundle
+                                        //             .bundleTitle
+                                        //             .toString(),
+                                        //         phoneNumber: data
+                                        //             .rechargebleAccount
+                                        //             .toString(),
+                                        //         sellingPrice: data
+                                        //             .bundle
+                                        //             .sellingPrice
+                                        //             .toString(),
+                                        //         buyingPrice: data
+                                        //             .bundle
+                                        //             .buyingPrice
+                                        //             .toString(),
+                                        //         orderId: data.id.toString(),
+                                        //         imagelink: data
+                                        //             .bundle
+                                        //             .service
+                                        //             .company
+                                        //             .companyLogo
+                                        //             .toString(),
+                                        //         date: data.createdAt.toString(),
+                                        //         contactname: dashboardController
+                                        //             .alldashboardData
+                                        //             .value
+                                        //             .data!
+                                        //             .userInfo!
+                                        //             .contactName
+                                        //             .toString(),
+                                        //       ),
+                                        //     );
+                                        //   },
+                                        // );
                                       },
                                       child: Container(
                                         width: screenWidth,
@@ -1025,39 +1085,64 @@ class _OrdersState extends State<Orders> {
                                         orderlistController.finalList[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(17),
-                                              ),
-                                              contentPadding: EdgeInsets.all(0),
-                                              content: DetailsDialog(
-                                                status: data.status.toString(),
-                                                bundletitle: data
-                                                    .bundle
-                                                    .bundleTitle
-                                                    .toString(),
-                                                phoneNumber: data
-                                                    .rechargebleAccount
-                                                    .toString(),
-                                                sellingPrice: data
-                                                    .bundle
-                                                    .sellingPrice
-                                                    .toString(),
-                                                orderId: data.id.toString(),
-                                                imagelink: data
-                                                    .bundle
-                                                    .service
-                                                    .company
-                                                    .companyLogo
-                                                    .toString(),
-                                                date: data.createdAt.toString(),
-                                              ),
-                                            );
-                                          },
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrderDetailsScreen(
+                                                  createDate: data.createdAt
+                                                      .toString(),
+                                                  status: data.status
+                                                      .toString(),
+                                                  rejectReason: data
+                                                      .rejectReason
+                                                      .toString(),
+                                                  companyName: data
+                                                      .bundle!
+                                                      .service!
+                                                      .company!
+                                                      .companyName
+                                                      .toString(),
+                                                  bundleTitle: data
+                                                      .bundle!
+                                                      .bundleTitle!
+                                                      .toString(),
+                                                  rechargebleAccount: data
+                                                      .rechargebleAccount!
+                                                      .toString(),
+                                                  validityType: data
+                                                      .bundle!
+                                                      .validityType!
+                                                      .toString(),
+                                                  sellingPrice: data
+                                                      .bundle!
+                                                      .sellingPrice
+                                                      .toString(),
+                                                  orderID: data.id!.toString(),
+                                                  resellerName:
+                                                      dashboardController
+                                                          .alldashboardData
+                                                          .value
+                                                          .data!
+                                                          .userInfo!
+                                                          .contactName
+                                                          .toString(),
+                                                  resellerPhone:
+                                                      dashboardController
+                                                          .alldashboardData
+                                                          .value
+                                                          .data!
+                                                          .userInfo!
+                                                          .phone
+                                                          .toString(),
+                                                  companyLogo: data
+                                                      .bundle!
+                                                      .service!
+                                                      .company!
+                                                      .companyLogo
+                                                      .toString(),
+                                                ),
+                                          ),
                                         );
                                       },
                                       child: Container(

@@ -1429,7 +1429,6 @@ class _NetworkState extends State<Network> {
                   ),
                 ),
               ),
-              SizedBox(height: 80),
             ],
           ),
         ),

@@ -103,7 +103,7 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
         height: screenHeight,
         width: screenWidth,
         decoration: BoxDecoration(gradient: AppColors.primaryGradient),
-        child: Column(
+        child: ListView(
           children: [
             SizedBox(height: 10),
             Container(

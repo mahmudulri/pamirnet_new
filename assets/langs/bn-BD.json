@@ -291,5 +291,10 @@
   "PAYMENT_RECEIPT": "পেমেন্ট রসিদ",
   "ENTER_ID": "আইডি লিখুন",
   "SAVE": "সংরক্ষণ করুন",
-  "REASON": "কারণ"
+  "REASON": "কারণ",
+  "ORDER_STATUS": "অর্ডারের অবস্থা",
+"NETWORK_TYPE": "নেটওয়ার্কের ধরন",
+"BUNDLE_TYPE": "বান্ডেলের ধরন",
+"VALIDITY_TYPE": "মেয়াদের ধরন",
+"HISTORY": "ইতিহাস"
 }

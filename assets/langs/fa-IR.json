@@ -291,5 +291,10 @@
   "PAYMENT_RECEIPT": "فیش پرداخت",
   "ENTER_ID": "شناسه را وارد کنید",
   "SAVE": "ذخیره",
-  "REASON": "دلیل"
+  "REASON": "دلیل",
+  "ORDER_STATUS": "وضعیت سفارش",
+"NETWORK_TYPE": "نوع شبکه",
+"BUNDLE_TYPE": "نوع بسته",
+"VALIDITY_TYPE": "نوع اعتبار",
+"HISTORY": "تاریخچه"
 }

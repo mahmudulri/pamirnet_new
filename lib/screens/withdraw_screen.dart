@@ -212,7 +212,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                   );
                 }),
               ),
-              SizedBox(height: 80),
             ],
           ),
         ),

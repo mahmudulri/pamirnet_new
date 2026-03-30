@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:pamirnet/controllers/transaction_controller.dart';
 import 'package:pamirnet/global_controller/languages_controller.dart';
 import 'package:pamirnet/utils/colors.dart';
+import 'package:pamirnet/widgets/ktext.dart';
 
 import '../global_controller/font_controller.dart';
 import '../helpers/localtime_helper.dart';
@@ -193,7 +194,6 @@ class _TransactionsState extends State<Transactions> {
                           ),
                   ),
                 ),
-                SizedBox(height: 80),
               ],
             ),
           ),
@@ -382,6 +382,27 @@ class _TransactionsState extends State<Transactions> {
                   Text(
                     box.read("currency_code"),
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                  SizedBox(height: 8),
+
+                  Visibility(
+                    visible: data.remainingBalance != null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        KText(
+                          text: languagesController.tr("REMAINING_BALANCE"),
+                          fontSize: 14,
+                        ),
+                        Text(
+                          data.remainingBalance.toString(),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

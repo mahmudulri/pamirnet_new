@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pamirnet/controllers/bundle_controller.dart';
 import 'package:pamirnet/controllers/confirm_pin_controller.dart';
 import 'package:pamirnet/controllers/dashboard_controller.dart';
@@ -12,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:pamirnet/widgets/ktext.dart';
 import '../controllers/categories_controller.dart';
 import '../controllers/company_controller.dart';
+import '../controllers/order_list_controller.dart';
 import '../global_controller/conversation_controller.dart';
 import '../controllers/country_list_controller.dart';
 import '../controllers/notification_controller.dart';
@@ -19,8 +21,10 @@ import '../controllers/slider_controller.dart';
 import '../global_controller/font_controller.dart';
 import '../global_controller/page_controller.dart';
 import '../screens/hawala_list_screen.dart';
+import '../screens/order_details.dart';
 import '../screens/top_up_screen.dart';
 import '../screens/withdraw_screen.dart';
+import '../widgets/animatedbutton.dart';
 import '../widgets/customrechargebutton.dart';
 
 class Homepages extends StatefulWidget {
@@ -61,14 +65,27 @@ class _HomepagesState extends State<Homepages> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    notificationController.fetchData();
-    companyController.fetchCompany();
-    sliderController.fetchSliderData();
-    countrylistController.fetchCountryData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      confirmPinController.numberController.clear();
+
+      notificationController.fetchData();
+      companyController.fetchCompany();
+      sliderController.fetchSliderData();
+      countrylistController.fetchCountryData();
+
+      box.write("date", "");
+      box.write("orderstatus", "");
+      box.write("search_target", "");
+
+      orderlistController.finalList.clear();
+      orderlistController.initialpage = 1;
+      orderlistController.fetchOrderlistdata();
+    });
   }
+
+  OrderlistController orderlistController = Get.put(OrderlistController());
 
   final confirmPinController = Get.find<ConfirmPinController>();
 
@@ -86,8 +103,6 @@ class _HomepagesState extends State<Homepages> {
 
   @override
   Widget build(BuildContext context) {
-    confirmPinController.numberController.clear();
-
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -146,10 +161,9 @@ class _HomepagesState extends State<Homepages> {
                 }),
               ),
 
-              SizedBox(height: 8),
-
-              GradientActionButton(
-                text: languagesController.tr("AFGHAN_RECHARGE"),
+              SizedBox(height: 12),
+              AnimatedBorderButton(
+                label: languagesController.tr("AFGHAN_RECHARGE"),
                 onTap: () {
                   if (countrylistController.finalCountryList.isNotEmpty) {
                     var afghanistan = countrylistController.finalCountryList
@@ -169,6 +183,7 @@ class _HomepagesState extends State<Homepages> {
                   );
                 },
               ),
+
               SizedBox(height: 10),
               Container(
                 height: 85,
@@ -595,7 +610,7 @@ class _HomepagesState extends State<Homepages> {
                   ],
                 ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 10),
               Container(
                 height: 78,
                 width: screenWidth,
@@ -930,8 +945,227 @@ class _HomepagesState extends State<Homepages> {
                   ],
                 ),
               ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  KText(
+                    text: languagesController.tr("HISTORY"),
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Container(
+                height: 350,
+                width: screenWidth,
 
-              SizedBox(height: 80),
+                child: Obx(
+                  () => orderlistController.isLoading.value == false
+                      ? ListView.separated(
+                          physics: BouncingScrollPhysics(),
+                          separatorBuilder: (context, index) {
+                            return SizedBox(height: 5);
+                          },
+                          itemCount: orderlistController.finalList.length,
+                          itemBuilder: (context, index) {
+                            final data = orderlistController.finalList[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OrderDetailsScreen(
+                                      createDate: data.createdAt.toString(),
+                                      status: data.status.toString(),
+                                      rejectReason: data.rejectReason
+                                          .toString(),
+                                      companyName: data
+                                          .bundle!
+                                          .service!
+                                          .company!
+                                          .companyName
+                                          .toString(),
+                                      bundleTitle: data.bundle!.bundleTitle!
+                                          .toString(),
+                                      rechargebleAccount: data
+                                          .rechargebleAccount!
+                                          .toString(),
+                                      validityType: data.bundle!.validityType!
+                                          .toString(),
+                                      sellingPrice: data.bundle!.sellingPrice
+                                          .toString(),
+                                      orderID: data.id!.toString(),
+                                      resellerName: dashboardController
+                                          .alldashboardData
+                                          .value
+                                          .data!
+                                          .userInfo!
+                                          .contactName
+                                          .toString(),
+                                      resellerPhone: dashboardController
+                                          .alldashboardData
+                                          .value
+                                          .data!
+                                          .userInfo!
+                                          .phone
+                                          .toString(),
+                                      companyLogo: data
+                                          .bundle!
+                                          .service!
+                                          .company!
+                                          .companyLogo
+                                          .toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 60,
+                                width: screenWidth,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColors.listbuilderboxColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(
+                                              data
+                                                  .bundle!
+                                                  .service!
+                                                  .company!
+                                                  .companyLogo
+                                                  .toString(),
+                                            ),
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 5,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  data.bundle!.bundleTitle
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                data.rechargebleAccount
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              data.bundle!.sellingPrice
+                                                  .toString(),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            SizedBox(width: 2),
+                                            Text(
+                                              data
+                                                  .bundle!
+                                                  .preferedCurrency!
+                                                  .code
+                                                  .toString(),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              // Icon(
+                                              //   Icons.check,
+                                              //   color: Colors.green,
+                                              //   size: 14,
+                                              // ),
+                                              Text(
+                                                data.status.toString() == "0"
+                                                    ? "pending"
+                                                    : data.status.toString() ==
+                                                          "1"
+                                                    ? "confirmed"
+                                                    : "rejected",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              // Text(
+                                              //   "2 days ago",
+                                              //   style: TextStyle(
+                                              //     color: Colors.green,
+                                              //     fontSize: 10,
+                                              //     fontWeight:
+                                              //         FontWeight.w600,
+                                              //   ),
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Center(child: CircularProgressIndicator()),
+                ),
+              ),
             ],
           ),
         ),

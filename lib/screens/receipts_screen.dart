@@ -112,10 +112,8 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
                                           begin: Alignment.topCenter,
                                           end: Alignment.bottomCenter,
                                           colors: [
-                                            Colors.white.withOpacity(
-                                              0.3,
-                                            ), // উপরের দিকের হালকা সাদা
-                                            Colors.transparent, // নিচে স্বচ্ছ
+                                            Colors.white.withOpacity(0.3),
+                                            Colors.transparent,
                                           ],
                                         ),
                                       ),
@@ -397,11 +395,15 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
                                                     text: languagesController
                                                         .tr("PAYMENT_METHOD"),
                                                   ),
-                                                  Text(
-                                                    data
-                                                        .paymentMethod!
-                                                        .methodName
-                                                        .toString(),
+
+                                                  Expanded(
+                                                    child: Text(
+                                                      textAlign: TextAlign.end,
+                                                      data
+                                                          .paymentMethod!
+                                                          .methodName
+                                                          .toString(),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -685,7 +687,6 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 80),
           ],
         ),
       ),
@@ -890,10 +891,14 @@ class PaymentDialog extends StatelessWidget {
                             color: Color(0xff637381),
                             fontSize: 15,
                           ),
-                          KText(
-                            text: paymentmethod.toString(),
-                            color: Color(0xff637381),
-                            fontSize: 15,
+
+                          Flexible(
+                            child: KText(
+                              textAlign: TextAlign.end,
+                              text: paymentmethod.toString(),
+                              color: Color(0xff637381),
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../controllers/bundle_controller.dart';
 import '../controllers/categories_controller.dart';
+import '../controllers/categories_list_controller.dart';
 import '../controllers/country_list_controller.dart';
 import '../controllers/service_controller.dart';
 import '../global_controller/font_controller.dart';
@@ -16,32 +17,29 @@ import 'country_selection.dart';
 import 'recharge_screen.dart';
 import 'social_bundles.dart';
 
-class NewServiceScreen extends StatelessWidget {
+class NewServiceScreen extends StatefulWidget {
   NewServiceScreen({super.key});
 
-  // final categorisListController = Get.find<CategorisListController>();
+  @override
+  State<NewServiceScreen> createState() => _NewServiceScreenState();
+}
 
-  CategorisListController categorisListController = Get.put(
-    CategorisListController(),
+class _NewServiceScreenState extends State<NewServiceScreen> {
+  // final categorisListController = Get.find<CategorisListController>();
+  NewCategorisListController categorisListController = Get.put(
+    NewCategorisListController(),
   );
 
   final box = GetStorage();
-  List mycolor = [
-    Color(0xffF4EBFC),
-    Color(0xffEAFBFB),
-    Color(0xffE9F2ED),
-    Color(0xffFBF5F1),
-    Color(0xffEAFBFB),
-    Color(0xffF7FBEF),
-  ];
 
-  final List<String> icons = [
-    "assets/icons/sim.png",
-    "assets/icons/social-bundles.png",
-    "assets/icons/dataplan.png",
-    "assets/icons/credit-transfer.png",
-    "assets/icons/callsmsplan.png",
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    categorisListController.nonsocialArray.clear();
+    categorisListController.fetchcategories();
+    serviceController.fetchservices();
+  }
 
   // final countryListController = Get.find<CountryListController>();
   final bundleController = Get.find<BundleController>();
@@ -62,96 +60,215 @@ class NewServiceScreen extends StatelessWidget {
         decoration: BoxDecoration(gradient: AppColors.primaryGradient),
         height: screenHeight,
         width: screenWidth,
-        child: Obx(
-          () => categorisListController.isLoading.value == false
-              ? GridView.builder(
-                  physics: BouncingScrollPhysics(),
-                  padding: EdgeInsets.all(12),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 7,
-                    mainAxisSpacing: 7,
-                    childAspectRatio: 1.0,
-                  ),
-                  itemCount: categorisListController
-                      .allcategorieslist
-                      .value
-                      .data!
-                      .servicecategories!
-                      .length,
-                  itemBuilder: (context, index) {
-                    final data = categorisListController
-                        .allcategorieslist
-                        .value
-                        .data!
-                        .servicecategories![index];
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: ListView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              Obx(
+                () => categorisListController.isLoading.value == false
+                    ? GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 3.0,
+                          mainAxisSpacing: 3.0,
+                          childAspectRatio: 0.9,
+                        ),
+                        itemCount:
+                            categorisListController.nonsocialArray.length,
+                        itemBuilder: (context, index) {
+                          final data =
+                              categorisListController.nonsocialArray[index];
+                          return GestureDetector(
+                            onTap: () {
+                              serviceController.reserveDigit.clear();
+                              bundleController.finalList.clear();
 
-                    final color = mycolor[index % mycolor.length];
-                    final icon = icons[index % icons.length];
+                              box.write("maxlength", data["phoneNumberLength"]);
 
-                    return GestureDetector(
-                      onTap: () {
-                        box.write("service_category_id", data.id);
+                              box.write("validity_type", "");
+                              box.write("company_id", "");
+                              box.write("search_tag", "");
+                              box.write("country_id", data["countryId"]);
 
-                        if (data.type.toString() == "nonsocial") {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(content: InternetPack());
-                            },
-                          );
-                        } else {
-                          box.write("validity_type", "");
-                          box.write("search_tag", "");
-                          box.write("service_category_id", data.id);
-                          box.write("country_id", "");
-                          box.write("company_id", "");
+                              box.write(
+                                "service_category_id",
+                                data["categoryId"],
+                              );
+                              bundleController.initialpage = 1;
 
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Padding(
-                                padding: EdgeInsets.all(20),
-                                child: ServiceScreen(),
+                              mypagecontroller.changePage(
+                                RechargeScreen(),
+                                isMainPage: false,
                               );
                             },
-                          );
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              data.categoryName.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.grey.shade700,
-                                fontWeight: FontWeight.w800,
-                                fontSize: screenHeight * 0.015,
-                                fontFamily:
-                                    box.read("language").toString() == "Fa"
-                                    ? Get.find<FontController>().currentFont
-                                    : null,
+                            child: Card(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      offset: Offset(0, 0),
+                                    ),
+                                  ],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 30,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                            data["countryImage"],
+                                          ),
+                                    ),
+                                    Text(
+                                      data["categoryName"],
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            data.categoryImageUrl.toString() == "null"
-                                ? Image.asset(icon, height: 50)
-                                : Image.network(
-                                    data.categoryImageUrl.toString(),
-                                    height: 50,
-                                  ),
-                          ],
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(50.0),
+                          child: SizedBox(),
                         ),
                       ),
-                    );
-                  },
-                )
-              : Center(child: CircularProgressIndicator()),
+              ),
+
+              // Display Social Service Categories without Country
+              Obx(
+                () => categorisListController.isLoading.value == false
+                    ? Column(
+                        children: categorisListController
+                            .allcategorieslist
+                            .value!
+                            .data!
+                            .servicecategories!
+                            .where((category) => category.type == "social")
+                            .map((category) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    category.categoryName.toString(),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: 3.0,
+                                          mainAxisSpacing: 3.0,
+                                          childAspectRatio: 0.9,
+                                        ),
+                                    itemCount: category.services?.length ?? 0,
+                                    itemBuilder: (context, serviceIndex) {
+                                      final service =
+                                          category.services![serviceIndex];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          bundleController.finalList.clear();
+                                          box.write("validity_type", "");
+                                          box.write(
+                                            "company_id",
+                                            service.companyId.toString(),
+                                          );
+                                          box.write("search_tag", "");
+                                          box.write(
+                                            "country_id",
+                                            service.company!.countryId
+                                                .toString(),
+                                          );
+                                          box.write(
+                                            "service_category_id",
+                                            category.id.toString(),
+                                          );
+                                          bundleController.initialpage = 1;
+
+                                          mypagecontroller.changePage(
+                                            SocialBundles(),
+                                            isMainPage: false,
+                                          );
+                                        },
+                                        child: Card(
+                                          color: Colors.white,
+                                          child: Container(
+                                            width: 152,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 2,
+                                                  offset: Offset(0, 0),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 30,
+                                                    backgroundImage:
+                                                        CachedNetworkImageProvider(
+                                                          service
+                                                              .company!
+                                                              .companyLogo
+                                                              .toString(),
+                                                        ),
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Text(
+                                                    service.company!.companyName
+                                                        .toString(),
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            })
+                            .toList(),
+                      )
+                    : Center(child: CircularProgressIndicator()),
+              ),
+            ],
+          ),
         ),
       ),
     );

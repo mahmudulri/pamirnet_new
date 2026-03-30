@@ -398,7 +398,6 @@ class _CommissionGroupScreenState extends State<CommissionGroupScreen> {
                       : Center(child: CircularProgressIndicator()),
                 ),
               ),
-              SizedBox(height: 80),
             ],
           ),
         ),

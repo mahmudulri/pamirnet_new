@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pamirnet/global_controller/page_controller.dart';
+import 'package:pamirnet/pages/network.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pamirnet/controllers/sign_in_controller.dart';
 import 'package:pamirnet/global_controller/languages_controller.dart';
@@ -68,7 +69,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       child: Column(
         children: [
           Container(
-            height: 180,
+            height: 165,
             width: double.maxFinite,
             decoration: BoxDecoration(
               gradient: AppColors.primaryGradient,
@@ -87,48 +88,19 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 SizedBox(height: 40),
                 CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  radius: 45,
+                  radius: 40,
                   backgroundImage: AssetImage("assets/icons/logo.png"),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 5),
                 Text(
-                  "تک تلکام",
+                  "Pamirnet",
                   style: TextStyle(
-                    fontSize: screenHeight * 0.028,
+                    fontSize: screenHeight * 0.025,
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontFamily: "Btitrbold",
                   ),
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     Obx(
-                //       () => dashboardController.isLoading.value == false
-                //           ? Column(
-                //               children: [
-                //                 Text(
-                //                   dashboardController
-                //                       .alldashboardData
-                //                       .value
-                //                       .data!
-                //                       .userInfo!
-                //                       .resellerName
-                //                       .toString(),
-                //                   style: TextStyle(
-                //                     fontSize: screenHeight * 0.015,
-                //                     color: Colors.white,
-                //                     fontWeight: FontWeight.bold,
-                //                     fontFamily:
-                //                         Get.find<FontController>().currentFont,
-                //                   ),
-                //                 ),
-                //               ],
-                //             )
-                //           : SizedBox(),
-                //     ),
-                //   ],
-                // ),
               ],
             ),
           ),
@@ -149,7 +121,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 Obx(
                   () => drawermenu(
                     imagelink: "assets/icons/set_sell_price.png",
@@ -163,7 +135,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 Obx(
                   () => drawermenu(
                     imagelink: "assets/icons/set_vendor_sell_price.png",
@@ -177,7 +149,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 Obx(
                   () => drawermenu(
                     imagelink: "assets/icons/transactionsicon.png",
@@ -191,7 +163,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 Obx(
                   () => drawermenu(
                     imagelink: "assets/icons/exchange-rate.png",
@@ -205,7 +177,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 Obx(
                   () => drawermenu(
                     imagelink: "assets/icons/transactionsicon.png",
@@ -221,7 +193,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 drawermenu(
                   imagelink: "assets/icons/security-safe.png",
                   menuname: languagesController.tr("CHANGE_PIN"),
@@ -233,7 +205,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     Navigator.pop(context);
                   },
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
+                drawermenu(
+                  imagelink: "assets/icons/subreseller.png",
+                  menuname: languagesController.tr("NETWORK"),
+                  onpressed: () {
+                    mypagecontroller.changePage(Network(), isMainPage: false);
+                    Navigator.pop(context);
+                  },
+                ),
+
                 drawermenu(
                   imagelink: "assets/icons/security-safe.png",
                   menuname: languagesController.tr("CHANGE_PASSWORD"),
@@ -245,7 +226,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     Navigator.pop(context);
                   },
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 drawermenu(
                   imagelink: "assets/icons/note-text.png",
                   menuname: languagesController.tr("HELP"),
@@ -257,7 +238,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     Navigator.pop(context);
                   },
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 drawermenu(
                   imagelink: "assets/icons/whatsapp.png",
                   menuname: languagesController.tr("CONTACTUS"),
@@ -277,7 +258,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     );
                   },
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 drawermenu(
                   imagelink: "assets/icons/global.png",
                   menuname: languagesController.tr("LANGUAGES"),
@@ -399,7 +380,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     // Navigator.pop(context);
                   },
                 ),
-                SizedBox(height: screenHeight * 0.015),
+
                 drawermenu(
                   imagelink: "assets/icons/logout.png",
                   menuname: languagesController.tr("LOGOUT"),
@@ -440,25 +421,28 @@ class drawermenu extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: onpressed,
-      child: Row(
-        children: [
-          SizedBox(width: 10),
-          Image.asset(
-            imagelink.toString(),
-            height: 25,
-            color: AppColors.primaryColor,
-          ),
-          SizedBox(width: 5),
-          Text(
-            menuname.toString(),
-            style: TextStyle(
-              color: Color(0xff637381),
-              fontSize: screenHeight * 0.017,
-              fontWeight: FontWeight.w600,
-              fontFamily: Get.find<FontController>().currentFont,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12),
+        child: Row(
+          children: [
+            SizedBox(width: 10),
+            Image.asset(
+              imagelink.toString(),
+              height: 25,
+              color: AppColors.primaryColor,
             ),
-          ),
-        ],
+            SizedBox(width: 5),
+            Text(
+              menuname.toString(),
+              style: TextStyle(
+                color: Color(0xff637381),
+                fontSize: screenHeight * 0.017,
+                fontWeight: FontWeight.w600,
+                fontFamily: Get.find<FontController>().currentFont,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -579,7 +563,7 @@ class LogoutDialogBox extends StatelessWidget {
 }
 
 whatsapp() async {
-  var contact = "++989174259341";
+  var contact = "+93799033223";
   var androidUrl = "whatsapp://send?phone=$contact&text=Hi, I need some help";
   var iosUrl = "https://wa.me/$contact?text=${Uri.parse('')}";
 

@@ -185,7 +185,8 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                 child: Obx(
                   () =>
                       sellingPriceController.isLoading.value == false &&
-                          serviceController.isLoading.value == false
+                          serviceController.isLoading.value == false &&
+                          categorisListController.isLoading.value == false
                       ? ListView.builder(
                           physics: BouncingScrollPhysics(),
                           itemCount: sellingPriceController

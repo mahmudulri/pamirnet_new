@@ -132,7 +132,6 @@ class _HelpscreenState extends State<Helpscreen> {
                     : Center(child: CircularProgressIndicator()),
               ),
             ),
-            SizedBox(height: 80),
           ],
         ),
       ),

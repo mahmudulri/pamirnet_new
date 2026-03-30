@@ -27,9 +27,7 @@ void showSocialPopup(BuildContext context) {
     context: context,
     builder: (BuildContext ctx) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(languagesController.tr("CONNECT_WITH_US")),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -41,7 +39,7 @@ void showSocialPopup(BuildContext context) {
                 minimumSize: Size(double.infinity, 45),
               ),
               label: Text("Telegram"),
-              onPressed: () => _launchUrl("https://t.me/Tak_Telecom"),
+              onPressed: () => _launchUrl("https://web.telegram.org/"),
             ),
             SizedBox(height: 10),
             ElevatedButton.icon(
@@ -51,8 +49,7 @@ void showSocialPopup(BuildContext context) {
                 minimumSize: Size(double.infinity, 45),
               ),
               label: Text("Facebook"),
-              onPressed: () =>
-                  _launchUrl("https://www.facebook.com/mahmudulrirz"),
+              onPressed: () => _launchUrl("https://www.facebook.com/"),
             ),
             SizedBox(height: 10),
             ElevatedButton.icon(
@@ -62,7 +59,7 @@ void showSocialPopup(BuildContext context) {
                 minimumSize: Size(double.infinity, 45),
               ),
               label: Text("Instagram"),
-              onPressed: () => _launchUrl("https://instagram.com/tak_telecom"),
+              onPressed: () => _launchUrl("https://instagram.com/"),
             ),
             // SizedBox(height: 10),
             // ElevatedButton.icon(

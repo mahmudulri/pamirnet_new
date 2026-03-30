@@ -631,7 +631,6 @@ class _RequestLoanScreenState extends State<RequestLoanScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 80),
           ],
         ),
       ),

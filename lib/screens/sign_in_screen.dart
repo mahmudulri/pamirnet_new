@@ -39,7 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   final box = GetStorage();
 
-  final String phoneNumber = "+989032926310";
+  final String phoneNumber = "+93799033223";
 
   Future<bool> showExitPopup() async {
     return await showDialog(
@@ -417,21 +417,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                   if (signInController.loginsuccess.value ==
                                       false) {
                                     dashboardController.fetchDashboardData();
-                                    // Navigating to the BottomNavigationbar page
-                                    // countryListController.fetchCountryData();
-                                    Get.toNamed(basescreen);
 
-                                    // if (box.read("direction") == "rtl") {
-                                    //   setState(() {
-                                    //     EasyLocalization.of(context)!
-                                    //         .setLocale(Locale('ar', 'AE'));
-                                    //   });
-                                    // } else {
-                                    //   setState(() {
-                                    //     EasyLocalization.of(context)!
-                                    //         .setLocale(Locale('en', 'US'));
-                                    //   });
-                                    // }
+                                    Get.toNamed(basescreen);
                                   } else {
                                     print("Navigation conditions not met.");
                                   }

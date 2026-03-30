@@ -288,5 +288,10 @@
   "PAYMENT_RECEIPT": "إيصال الدفع",
   "ENTER_ID": "أدخل المعرف",
   "SAVE": "حفظ",
-  "REASON": "السبب"
+  "REASON": "السبب",
+  "ORDER_STATUS": "حالة الطلب",
+"NETWORK_TYPE": "نوع الشبكة",
+"BUNDLE_TYPE": "نوع الباقة",
+"VALIDITY_TYPE": "نوع الصلاحية",
+"HISTORY": "السجل"
 }
