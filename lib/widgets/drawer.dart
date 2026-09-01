@@ -31,6 +31,7 @@ import '../screens/hawala_currency_screen.dart';
 import '../screens/hawala_list_screen.dart';
 import '../screens/loan_screen.dart';
 import 'ktext.dart';
+import 'language_number_dialog.dart';
 
 class DrawerWidget extends StatefulWidget {
   DrawerWidget({super.key});
@@ -267,118 +268,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return AlertDialog(
-                          title: Text(languagesController.tr("LANGUAGES")),
-                          content: Container(
-                            height: 350,
-                            width: screenWidth,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount:
-                                  languagesController.alllanguagedata.length,
-                              itemBuilder: (context, index) {
-                                final data =
-                                    languagesController.alllanguagedata[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    final languageName = data["name"]
-                                        .toString();
-
-                                    final matched = languagesController
-                                        .alllanguagedata
-                                        .firstWhere(
-                                          (lang) =>
-                                              lang["name"] == languageName,
-                                          orElse: () => {
-                                            "isoCode": "en",
-                                            "direction": "ltr",
-                                          },
-                                        );
-
-                                    final languageISO = matched["isoCode"]!;
-                                    final languageDirection =
-                                        matched["direction"]!;
-
-                                    // Store selected language & direction
-                                    languagesController.changeLanguage(
-                                      languageName,
-                                    );
-                                    box.write("language", languageName);
-                                    box.write("direction", languageDirection);
-
-                                    // Set locale based on ISO
-                                    Locale locale;
-                                    switch (languageISO) {
-                                      case "fa":
-                                        locale = Locale("fa", "IR");
-                                        break;
-                                      case "ar":
-                                        locale = Locale("ar", "AE");
-                                        break;
-                                      case "ps":
-                                        locale = Locale("ps", "AF");
-                                        break;
-                                      case "tr":
-                                        locale = Locale("tr", "TR");
-                                        break;
-                                      case "bn":
-                                        locale = Locale("bn", "BD");
-                                        break;
-                                      case "en":
-                                      default:
-                                        locale = Locale("en", "US");
-                                    }
-
-                                    // Set app locale
-                                    setState(() {
-                                      EasyLocalization.of(
-                                        context,
-                                      )!.setLocale(locale);
-                                    });
-
-                                    // Pop dialog
-                                    Navigator.pop(context);
-
-                                    print(
-                                      "🌐 Language changed to $languageName ($languageISO), Direction: $languageDirection",
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(bottom: 5),
-                                    height: 45,
-                                    width: screenWidth,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 1,
-                                        color: Colors.grey.shade300,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Center(
-                                            child: KText(
-                                              text: languagesController
-                                                  .alllanguagedata[index]["fullname"]
-                                                  .toString(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
+                        return LanguageNumberDialog(
+                          languagesController: languagesController,
                         );
                       },
                     );
-                    // Navigator.pop(context);
                   },
                 ),
 

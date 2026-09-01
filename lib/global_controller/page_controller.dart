@@ -5,7 +5,7 @@ import '../pages/network.dart';
 import '../pages/orders.dart';
 import '../pages/transaction_type.dart';
 import '../pages/transactions.dart';
-import '../screens/product_screen.dart';
+import '../pages/product_page.dart';
 
 class Mypagecontroller extends GetxController {
   /// Navigation stack
@@ -17,7 +17,7 @@ class Mypagecontroller extends GetxController {
   /// Main (bottom nav) pages
   final List<Widget> mainPages = [
     Homepages(),
-    NewServiceScreen(),
+    ProductPage(),
     Orders(),
     Transactions(),
   ];

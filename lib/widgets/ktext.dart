@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:pamirnet/utils/colors.dart';
 
-import '../global_controller/font_controller.dart';
+import '../global_controller/languages_controller.dart';
 
 class KText extends StatelessWidget {
   final String text;
@@ -32,9 +31,52 @@ class KText extends StatelessWidget {
         fontSize: fontSize,
         color: color ?? Colors.black,
         fontWeight: fontWeight,
-        fontFamily: box.read("language").toString() == "Fa"
-            ? Get.find<FontController>().currentFont
-            : null,
+      ),
+    );
+  }
+}
+
+// number format
+
+class NText extends StatelessWidget {
+  final String text;
+  final double fontSize;
+  final Color? color;
+  final FontWeight fontWeight;
+  final String? fontFamily;
+  final TextAlign? textAlign;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
+  NText({
+    Key? key,
+    required this.text,
+    this.fontSize = 16,
+    this.color,
+    this.fontWeight = FontWeight.normal,
+    this.fontFamily,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+  }) : super(key: key);
+
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => Text(
+        languagesController.number(text),
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+        style: TextStyle(
+          fontSize: fontSize,
+          color: color ?? Colors.black,
+          fontWeight: fontWeight,
+          fontFamily: fontFamily,
+        ),
       ),
     );
   }

@@ -530,55 +530,6 @@ class _OrdersState extends State<Orders> {
                                                 ),
                                           ),
                                         );
-                                        // showDialog(
-                                        //   context: context,
-                                        //   builder: (context) {
-                                        //     return AlertDialog(
-                                        //       shape: RoundedRectangleBorder(
-                                        //         borderRadius:
-                                        //             BorderRadius.circular(17),
-                                        //       ),
-                                        //       insetPadding:
-                                        //           EdgeInsets.symmetric(
-                                        //             horizontal: 20,
-                                        //           ),
-                                        //       contentPadding: EdgeInsets.all(0),
-                                        //       content: DetailsDialog(
-                                        //         status: data.status.toString(),
-                                        //         bundletitle: data
-                                        //             .bundle
-                                        //             .bundleTitle
-                                        //             .toString(),
-                                        //         phoneNumber: data
-                                        //             .rechargebleAccount
-                                        //             .toString(),
-                                        //         sellingPrice: data
-                                        //             .bundle
-                                        //             .sellingPrice
-                                        //             .toString(),
-                                        //         buyingPrice: data
-                                        //             .bundle
-                                        //             .buyingPrice
-                                        //             .toString(),
-                                        //         orderId: data.id.toString(),
-                                        //         imagelink: data
-                                        //             .bundle
-                                        //             .service
-                                        //             .company
-                                        //             .companyLogo
-                                        //             .toString(),
-                                        //         date: data.createdAt.toString(),
-                                        //         contactname: dashboardController
-                                        //             .alldashboardData
-                                        //             .value
-                                        //             .data!
-                                        //             .userInfo!
-                                        //             .contactName
-                                        //             .toString(),
-                                        //       ),
-                                        //     );
-                                        //   },
-                                        // );
                                       },
                                       child: Container(
                                         width: screenWidth,
@@ -622,58 +573,54 @@ class _OrdersState extends State<Orders> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(
-                                                      "${languagesController.tr("ORDER_ID")} (# ${data.id})",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize:
-                                                            screenHeight *
-                                                            0.020,
-                                                        fontFamily:
-                                                            box
-                                                                    .read(
-                                                                      "language",
-                                                                    )
-                                                                    .toString() ==
-                                                                "Fa"
-                                                            ? Get.find<
-                                                                    FontController
-                                                                  >()
-                                                                  .currentFont
-                                                            : null,
-                                                      ),
+                                                    NText(
+                                                      text:
+                                                          "${languagesController.tr("ORDER_ID")} (# ${data.id})",
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize:
+                                                          screenHeight * 0.020,
+                                                      fontFamily:
+                                                          box
+                                                                  .read(
+                                                                    "language",
+                                                                  )
+                                                                  .toString() ==
+                                                              "Fa"
+                                                          ? Get.find<
+                                                                  FontController
+                                                                >()
+                                                                .currentFont
+                                                          : null,
                                                     ),
-                                                    Text(
-                                                      DateFormat(
-                                                        'dd MMM yyyy',
-                                                      ).format(
-                                                        DateTime.parse(
-                                                          data.createdAt
-                                                              .toString(),
-                                                        ),
-                                                      ),
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize:
-                                                            screenHeight *
-                                                            0.020,
-                                                        fontFamily:
-                                                            box
-                                                                    .read(
-                                                                      "language",
-                                                                    )
-                                                                    .toString() ==
-                                                                "Fa"
-                                                            ? Get.find<
-                                                                    FontController
-                                                                  >()
-                                                                  .currentFont
-                                                            : null,
-                                                      ),
+                                                    NText(
+                                                      text:
+                                                          DateFormat(
+                                                            'dd MMM yyyy',
+                                                          ).format(
+                                                            DateTime.parse(
+                                                              data.createdAt
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize:
+                                                          screenHeight * 0.020,
+                                                      fontFamily:
+                                                          box
+                                                                  .read(
+                                                                    "language",
+                                                                  )
+                                                                  .toString() ==
+                                                              "Fa"
+                                                          ? Get.find<
+                                                                  FontController
+                                                                >()
+                                                                .currentFont
+                                                          : null,
                                                     ),
                                                   ],
                                                 ),
@@ -737,8 +684,9 @@ class _OrdersState extends State<Orders> {
                                                           ),
                                                         ),
                                                         Expanded(
-                                                          child: Text(
-                                                            data.rechargebleAccount
+                                                          child: NText(
+                                                            text: data
+                                                                .rechargebleAccount
                                                                 .toString(),
                                                             textAlign:
                                                                 TextAlign.end,
@@ -746,14 +694,11 @@ class _OrdersState extends State<Orders> {
                                                                 TextOverflow
                                                                     .ellipsis,
                                                             maxLines: 1,
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize:
-                                                                  screenHeight *
-                                                                  0.018,
-                                                            ),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                screenHeight *
+                                                                0.018,
                                                           ),
                                                         ),
                                                       ],
@@ -917,43 +862,43 @@ class _OrdersState extends State<Orders> {
                                                               ),
                                                             ),
                                                             Text(" : "),
-                                                            Text(
-                                                              NumberFormat.currency(
-                                                                locale: 'en_US',
-                                                                symbol: '',
-                                                                decimalDigits:
-                                                                    2,
-                                                              ).format(
-                                                                double.parse(
-                                                                  data
-                                                                      .bundle!
-                                                                      .buyingPrice
-                                                                      .toString(),
-                                                                ),
-                                                              ),
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade700,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                fontSize:
-                                                                    screenHeight *
-                                                                    0.018,
-                                                                fontFamily:
-                                                                    box
-                                                                            .read(
-                                                                              "language",
-                                                                            )
-                                                                            .toString() ==
-                                                                        "Fa"
-                                                                    ? Get.find<
-                                                                            FontController
-                                                                          >()
-                                                                          .currentFont
-                                                                    : null,
-                                                              ),
+                                                            NText(
+                                                              text:
+                                                                  NumberFormat.currency(
+                                                                    locale:
+                                                                        'en_US',
+                                                                    symbol: '',
+                                                                    decimalDigits:
+                                                                        2,
+                                                                  ).format(
+                                                                    double.parse(
+                                                                      data
+                                                                          .bundle!
+                                                                          .buyingPrice
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                              color: Colors
+                                                                  .grey
+                                                                  .shade700,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize:
+                                                                  screenHeight *
+                                                                  0.018,
+                                                              fontFamily:
+                                                                  box
+                                                                          .read(
+                                                                            "language",
+                                                                          )
+                                                                          .toString() ==
+                                                                      "Fa"
+                                                                  ? Get.find<
+                                                                          FontController
+                                                                        >()
+                                                                        .currentFont
+                                                                  : null,
                                                             ),
                                                             SizedBox(width: 5),
                                                             Text(
@@ -1001,43 +946,43 @@ class _OrdersState extends State<Orders> {
                                                               ),
                                                             ),
                                                             Text(" : "),
-                                                            Text(
-                                                              NumberFormat.currency(
-                                                                locale: 'en_US',
-                                                                symbol: '',
-                                                                decimalDigits:
-                                                                    2,
-                                                              ).format(
-                                                                double.parse(
-                                                                  data
-                                                                      .bundle!
-                                                                      .sellingPrice
-                                                                      .toString(),
-                                                                ),
-                                                              ),
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade700,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                fontSize:
-                                                                    screenHeight *
-                                                                    0.018,
-                                                                fontFamily:
-                                                                    box
-                                                                            .read(
-                                                                              "language",
-                                                                            )
-                                                                            .toString() ==
-                                                                        "Fa"
-                                                                    ? Get.find<
-                                                                            FontController
-                                                                          >()
-                                                                          .currentFont
-                                                                    : null,
-                                                              ),
+                                                            NText(
+                                                              text:
+                                                                  NumberFormat.currency(
+                                                                    locale:
+                                                                        'en_US',
+                                                                    symbol: '',
+                                                                    decimalDigits:
+                                                                        2,
+                                                                  ).format(
+                                                                    double.parse(
+                                                                      data
+                                                                          .bundle!
+                                                                          .sellingPrice
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                              color: Colors
+                                                                  .grey
+                                                                  .shade700,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize:
+                                                                  screenHeight *
+                                                                  0.018,
+                                                              fontFamily:
+                                                                  box
+                                                                          .read(
+                                                                            "language",
+                                                                          )
+                                                                          .toString() ==
+                                                                      "Fa"
+                                                                  ? Get.find<
+                                                                          FontController
+                                                                        >()
+                                                                        .currentFont
+                                                                  : null,
                                                             ),
                                                             SizedBox(width: 5),
                                                             Text(
@@ -1189,58 +1134,54 @@ class _OrdersState extends State<Orders> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(
-                                                      "${languagesController.tr("ORDER_ID")} (# ${data.id})",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize:
-                                                            screenHeight *
-                                                            0.020,
-                                                        fontFamily:
-                                                            box
-                                                                    .read(
-                                                                      "language",
-                                                                    )
-                                                                    .toString() ==
-                                                                "Fa"
-                                                            ? Get.find<
-                                                                    FontController
-                                                                  >()
-                                                                  .currentFont
-                                                            : null,
-                                                      ),
+                                                    NText(
+                                                      text:
+                                                          "${languagesController.tr("ORDER_ID")} (# ${data.id})",
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize:
+                                                          screenHeight * 0.020,
+                                                      fontFamily:
+                                                          box
+                                                                  .read(
+                                                                    "language",
+                                                                  )
+                                                                  .toString() ==
+                                                              "Fa"
+                                                          ? Get.find<
+                                                                  FontController
+                                                                >()
+                                                                .currentFont
+                                                          : null,
                                                     ),
-                                                    Text(
-                                                      DateFormat(
-                                                        'dd MMM yyyy',
-                                                      ).format(
-                                                        DateTime.parse(
-                                                          data.createdAt
-                                                              .toString(),
-                                                        ),
-                                                      ),
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize:
-                                                            screenHeight *
-                                                            0.020,
-                                                        fontFamily:
-                                                            box
-                                                                    .read(
-                                                                      "language",
-                                                                    )
-                                                                    .toString() ==
-                                                                "Fa"
-                                                            ? Get.find<
-                                                                    FontController
-                                                                  >()
-                                                                  .currentFont
-                                                            : null,
-                                                      ),
+                                                    NText(
+                                                      text:
+                                                          DateFormat(
+                                                            'dd MMM yyyy',
+                                                          ).format(
+                                                            DateTime.parse(
+                                                              data.createdAt
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize:
+                                                          screenHeight * 0.020,
+                                                      fontFamily:
+                                                          box
+                                                                  .read(
+                                                                    "language",
+                                                                  )
+                                                                  .toString() ==
+                                                              "Fa"
+                                                          ? Get.find<
+                                                                  FontController
+                                                                >()
+                                                                .currentFont
+                                                          : null,
                                                     ),
                                                   ],
                                                 ),
@@ -1303,27 +1244,22 @@ class _OrdersState extends State<Orders> {
                                                             ),
                                                           ),
                                                         ),
-                                                        Text(
-                                                          data.rechargebleAccount
-                                                              .toString(),
-                                                          style: TextStyle(
+                                                        Expanded(
+                                                          child: NText(
+                                                            text: data
+                                                                .rechargebleAccount
+                                                                .toString(),
+                                                            textAlign:
+                                                                TextAlign.end,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             fontSize:
                                                                 screenHeight *
                                                                 0.018,
-                                                            fontFamily:
-                                                                box
-                                                                        .read(
-                                                                          "language",
-                                                                        )
-                                                                        .toString() ==
-                                                                    "Fa"
-                                                                ? Get.find<
-                                                                        FontController
-                                                                      >()
-                                                                      .currentFont
-                                                                : null,
                                                           ),
                                                         ),
                                                       ],
@@ -1487,43 +1423,43 @@ class _OrdersState extends State<Orders> {
                                                               ),
                                                             ),
                                                             Text(" : "),
-                                                            Text(
-                                                              NumberFormat.currency(
-                                                                locale: 'en_US',
-                                                                symbol: '',
-                                                                decimalDigits:
-                                                                    2,
-                                                              ).format(
-                                                                double.parse(
-                                                                  data
-                                                                      .bundle!
-                                                                      .buyingPrice
-                                                                      .toString(),
-                                                                ),
-                                                              ),
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade700,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                fontSize:
-                                                                    screenHeight *
-                                                                    0.018,
-                                                                fontFamily:
-                                                                    box
-                                                                            .read(
-                                                                              "language",
-                                                                            )
-                                                                            .toString() ==
-                                                                        "Fa"
-                                                                    ? Get.find<
-                                                                            FontController
-                                                                          >()
-                                                                          .currentFont
-                                                                    : null,
-                                                              ),
+                                                            NText(
+                                                              text:
+                                                                  NumberFormat.currency(
+                                                                    locale:
+                                                                        'en_US',
+                                                                    symbol: '',
+                                                                    decimalDigits:
+                                                                        2,
+                                                                  ).format(
+                                                                    double.parse(
+                                                                      data
+                                                                          .bundle!
+                                                                          .buyingPrice
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                              color: Colors
+                                                                  .grey
+                                                                  .shade700,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize:
+                                                                  screenHeight *
+                                                                  0.018,
+                                                              fontFamily:
+                                                                  box
+                                                                          .read(
+                                                                            "language",
+                                                                          )
+                                                                          .toString() ==
+                                                                      "Fa"
+                                                                  ? Get.find<
+                                                                          FontController
+                                                                        >()
+                                                                        .currentFont
+                                                                  : null,
                                                             ),
                                                             SizedBox(width: 5),
                                                             Text(
@@ -1571,43 +1507,43 @@ class _OrdersState extends State<Orders> {
                                                               ),
                                                             ),
                                                             Text(" : "),
-                                                            Text(
-                                                              NumberFormat.currency(
-                                                                locale: 'en_US',
-                                                                symbol: '',
-                                                                decimalDigits:
-                                                                    2,
-                                                              ).format(
-                                                                double.parse(
-                                                                  data
-                                                                      .bundle!
-                                                                      .sellingPrice
-                                                                      .toString(),
-                                                                ),
-                                                              ),
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade700,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                fontSize:
-                                                                    screenHeight *
-                                                                    0.018,
-                                                                fontFamily:
-                                                                    box
-                                                                            .read(
-                                                                              "language",
-                                                                            )
-                                                                            .toString() ==
-                                                                        "Fa"
-                                                                    ? Get.find<
-                                                                            FontController
-                                                                          >()
-                                                                          .currentFont
-                                                                    : null,
-                                                              ),
+                                                            NText(
+                                                              text:
+                                                                  NumberFormat.currency(
+                                                                    locale:
+                                                                        'en_US',
+                                                                    symbol: '',
+                                                                    decimalDigits:
+                                                                        2,
+                                                                  ).format(
+                                                                    double.parse(
+                                                                      data
+                                                                          .bundle!
+                                                                          .sellingPrice
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                              color: Colors
+                                                                  .grey
+                                                                  .shade700,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize:
+                                                                  screenHeight *
+                                                                  0.018,
+                                                              fontFamily:
+                                                                  box
+                                                                          .read(
+                                                                            "language",
+                                                                          )
+                                                                          .toString() ==
+                                                                      "Fa"
+                                                                  ? Get.find<
+                                                                          FontController
+                                                                        >()
+                                                                        .currentFont
+                                                                  : null,
                                                             ),
                                                             SizedBox(width: 5),
                                                             Text(

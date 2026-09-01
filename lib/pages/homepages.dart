@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pamirnet/controllers/bundle_controller.dart';
 import 'package:pamirnet/controllers/confirm_pin_controller.dart';
@@ -11,13 +10,11 @@ import 'package:pamirnet/controllers/history_controller.dart';
 import 'package:pamirnet/global_controller/languages_controller.dart';
 import 'package:pamirnet/screens/credit_transfer.dart';
 import 'package:pamirnet/utils/colors.dart';
-import 'package:pamirnet/widgets/button_one.dart';
 import 'package:intl/intl.dart';
 import 'package:pamirnet/widgets/ktext.dart';
 import '../accounting/accounting_base.dart';
 import '../controllers/categories_controller.dart';
 import '../controllers/company_controller.dart';
-import '../controllers/order_list_controller.dart';
 import '../global_controller/conversation_controller.dart';
 import '../controllers/country_list_controller.dart';
 import '../controllers/notification_controller.dart';
@@ -29,7 +26,6 @@ import '../screens/order_details.dart';
 import '../screens/top_up_screen.dart';
 import '../screens/withdraw_screen.dart';
 import '../widgets/animatedbutton.dart';
-import '../widgets/customrechargebutton.dart';
 
 class Homepages extends StatefulWidget {
   Homepages({super.key});
@@ -404,37 +400,28 @@ class _HomepagesState extends State<Homepages> {
                                     dashboardController.isLoading.value == false
                                     ? Row(
                                         children: [
-                                          Text(
-                                            NumberFormat.currency(
-                                              locale: 'en_US',
-                                              symbol: '',
-                                              decimalDigits: 2,
-                                            ).format(
-                                              conversationController
-                                                  .convertFromUsd(
-                                                    double.parse(
-                                                      dashboardController
-                                                          .alldashboardData
-                                                          .value
-                                                          .data!
-                                                          .balance
-                                                          .toString(),
-                                                    ),
-                                                  ),
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey.shade700,
-                                              fontFamily:
-                                                  box
-                                                          .read("language")
-                                                          .toString() ==
-                                                      "Fa"
-                                                  ? Get.find<FontController>()
-                                                        .currentFont
-                                                  : null,
-                                            ),
+                                          NText(
+                                            text:
+                                                NumberFormat.currency(
+                                                  locale: 'en_US',
+                                                  symbol: '',
+                                                  decimalDigits: 2,
+                                                ).format(
+                                                  conversationController
+                                                      .convertFromUsd(
+                                                        double.parse(
+                                                          dashboardController
+                                                              .alldashboardData
+                                                              .value
+                                                              .data!
+                                                              .balance
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                ),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey.shade700,
                                           ),
                                           SizedBox(width: 5),
                                           Text(
@@ -502,37 +489,28 @@ class _HomepagesState extends State<Homepages> {
                                     dashboardController.isLoading.value == false
                                     ? Row(
                                         children: [
-                                          Text(
-                                            NumberFormat.currency(
-                                              locale: 'en_US',
-                                              symbol: '',
-                                              decimalDigits: 2,
-                                            ).format(
-                                              conversationController
-                                                  .convertFromUsd(
-                                                    double.parse(
-                                                      dashboardController
-                                                          .alldashboardData
-                                                          .value
-                                                          .data!
-                                                          .loanBalance
-                                                          .toString(),
-                                                    ),
-                                                  ),
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey.shade700,
-                                              fontFamily:
-                                                  box
-                                                          .read("language")
-                                                          .toString() ==
-                                                      "Fa"
-                                                  ? Get.find<FontController>()
-                                                        .currentFont
-                                                  : null,
-                                            ),
+                                          NText(
+                                            text:
+                                                NumberFormat.currency(
+                                                  locale: 'en_US',
+                                                  symbol: '',
+                                                  decimalDigits: 2,
+                                                ).format(
+                                                  conversationController
+                                                      .convertFromUsd(
+                                                        double.parse(
+                                                          dashboardController
+                                                              .alldashboardData
+                                                              .value
+                                                              .data!
+                                                              .loanBalance
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                ),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey.shade700,
                                           ),
                                           SizedBox(width: 5),
                                           Text(
@@ -610,39 +588,28 @@ class _HomepagesState extends State<Homepages> {
                                         children: [
                                           Row(
                                             children: [
-                                              Text(
-                                                NumberFormat.currency(
-                                                  locale: 'en_US',
-                                                  symbol: '',
-                                                  decimalDigits: 2,
-                                                ).format(
-                                                  conversationController
-                                                      .convertFromUsd(
-                                                        double.parse(
-                                                          dashboardController
-                                                              .alldashboardData
-                                                              .value
-                                                              .data!
-                                                              .totalRevenue
-                                                              .toString(),
-                                                        ),
-                                                      ),
-                                                ),
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey.shade700,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
+                                              NText(
+                                                text:
+                                                    NumberFormat.currency(
+                                                      locale: 'en_US',
+                                                      symbol: '',
+                                                      decimalDigits: 2,
+                                                    ).format(
+                                                      conversationController
+                                                          .convertFromUsd(
+                                                            double.parse(
+                                                              dashboardController
+                                                                  .alldashboardData
+                                                                  .value
+                                                                  .data!
+                                                                  .totalRevenue
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                    ),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey.shade700,
                                               ),
                                               SizedBox(width: 5),
                                               Text(
@@ -659,39 +626,28 @@ class _HomepagesState extends State<Homepages> {
                                           ),
                                           Row(
                                             children: [
-                                              Text(
-                                                NumberFormat.currency(
-                                                  locale: 'en_US',
-                                                  symbol: '',
-                                                  decimalDigits: 2,
-                                                ).format(
-                                                  conversationController
-                                                      .convertFromUsd(
-                                                        double.parse(
-                                                          dashboardController
-                                                              .alldashboardData
-                                                              .value
-                                                              .data!
-                                                              .todayProfit
-                                                              .toString(),
-                                                        ),
-                                                      ),
-                                                ),
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey.shade700,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
+                                              NText(
+                                                text:
+                                                    NumberFormat.currency(
+                                                      locale: 'en_US',
+                                                      symbol: '',
+                                                      decimalDigits: 2,
+                                                    ).format(
+                                                      conversationController
+                                                          .convertFromUsd(
+                                                            double.parse(
+                                                              dashboardController
+                                                                  .alldashboardData
+                                                                  .value
+                                                                  .data!
+                                                                  .todayProfit
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                    ),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey.shade700,
                                               ),
                                               SizedBox(width: 5),
                                               Text(
@@ -775,39 +731,28 @@ class _HomepagesState extends State<Homepages> {
                                         children: [
                                           Row(
                                             children: [
-                                              Text(
-                                                NumberFormat.currency(
-                                                  locale: 'en_US',
-                                                  symbol: '',
-                                                  decimalDigits: 2,
-                                                ).format(
-                                                  conversationController
-                                                      .convertFromUsd(
-                                                        double.parse(
-                                                          dashboardController
-                                                              .alldashboardData
-                                                              .value
-                                                              .data!
-                                                              .totalSoldAmount
-                                                              .toString(),
-                                                        ),
-                                                      ),
-                                                ),
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey.shade700,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
+                                              NText(
+                                                text:
+                                                    NumberFormat.currency(
+                                                      locale: 'en_US',
+                                                      symbol: '',
+                                                      decimalDigits: 2,
+                                                    ).format(
+                                                      conversationController
+                                                          .convertFromUsd(
+                                                            double.parse(
+                                                              dashboardController
+                                                                  .alldashboardData
+                                                                  .value
+                                                                  .data!
+                                                                  .totalSoldAmount
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                    ),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey.shade700,
                                               ),
                                               SizedBox(width: 5),
                                               Text(
@@ -824,39 +769,28 @@ class _HomepagesState extends State<Homepages> {
                                           ),
                                           Row(
                                             children: [
-                                              Text(
-                                                NumberFormat.currency(
-                                                  locale: 'en_US',
-                                                  symbol: '',
-                                                  decimalDigits: 2,
-                                                ).format(
-                                                  conversationController
-                                                      .convertFromUsd(
-                                                        double.parse(
-                                                          dashboardController
-                                                              .alldashboardData
-                                                              .value
-                                                              .data!
-                                                              .todaySale
-                                                              .toString(),
-                                                        ),
-                                                      ),
-                                                ),
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey.shade700,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
+                                              NText(
+                                                text:
+                                                    NumberFormat.currency(
+                                                      locale: 'en_US',
+                                                      symbol: '',
+                                                      decimalDigits: 2,
+                                                    ).format(
+                                                      conversationController
+                                                          .convertFromUsd(
+                                                            double.parse(
+                                                              dashboardController
+                                                                  .alldashboardData
+                                                                  .value
+                                                                  .data!
+                                                                  .todaySale
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                    ),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey.shade700,
                                               ),
                                               SizedBox(width: 5),
                                               Text(
@@ -898,7 +832,7 @@ class _HomepagesState extends State<Homepages> {
                   KText(
                     text: languagesController.tr("HISTORY"),
                     color: Colors.black,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ],
@@ -937,7 +871,11 @@ class _HomepagesState extends State<Homepages> {
                                       "assets/icons/empty.png",
                                       height: 80,
                                     ),
-                                    Text("No Data found"),
+                                    KText(
+                                      text: languagesController.tr(
+                                        "DATA_NOT_FOUND",
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -1072,7 +1010,7 @@ class _HomepagesState extends State<Homepages> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Flexible(
-                                                    child: KText(
+                                                    child: NText(
                                                       text: data
                                                           .bundle!
                                                           .bundleTitle
@@ -1082,17 +1020,15 @@ class _HomepagesState extends State<Homepages> {
                                                       fontSize: 14,
                                                     ),
                                                   ),
-                                                  Text(
+                                                  NText(
+                                                    text: data
+                                                        .rechargebleAccount
+                                                        .toString(),
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    data.rechargebleAccount
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 14,
-                                                      color: Colors.grey,
-                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -1103,21 +1039,22 @@ class _HomepagesState extends State<Homepages> {
                                             flex: 2,
                                             child: Row(
                                               children: [
-                                                Text(
-                                                  NumberFormat.currency(
-                                                    locale: 'en_US',
-                                                    symbol: '',
-                                                    decimalDigits: 2,
-                                                  ).format(
-                                                    double.parse(
-                                                      data.bundle!.sellingPrice
-                                                          .toString(),
-                                                    ),
-                                                  ),
-                                                  style: TextStyle(
-                                                    fontSize: 11,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                NText(
+                                                  text:
+                                                      NumberFormat.currency(
+                                                        locale: 'en_US',
+                                                        symbol: '',
+                                                        decimalDigits: 2,
+                                                      ).format(
+                                                        double.parse(
+                                                          data
+                                                              .bundle!
+                                                              .sellingPrice
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                                 SizedBox(width: 2),
                                                 Text(
@@ -1281,10 +1218,10 @@ class _HomepagesState extends State<Homepages> {
                                     height: 60,
                                     width: screenWidth,
                                     decoration: BoxDecoration(
-                                      // border: Border.all(
-                                      //   width: 1,
-                                      //   color: Colors.grey,
-                                      // ),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.grey.shade200,
+                                      ),
                                       borderRadius: BorderRadius.circular(10),
                                       color: AppColors.listbuilderboxColor,
                                     ),
@@ -1313,7 +1250,7 @@ class _HomepagesState extends State<Homepages> {
                                           ),
                                           SizedBox(width: 5),
                                           Expanded(
-                                            flex: 2,
+                                            flex: 3,
                                             child: Padding(
                                               padding: const EdgeInsets.only(
                                                 left: 5,
@@ -1325,25 +1262,25 @@ class _HomepagesState extends State<Homepages> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Flexible(
-                                                    child: Text(
-                                                      data.bundle!.bundleTitle
+                                                    child: NText(
+                                                      text: data
+                                                          .bundle!
+                                                          .bundleTitle
                                                           .toString(),
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 14,
-                                                      ),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14,
                                                     ),
                                                   ),
-                                                  Text(
-                                                    data.rechargebleAccount
+                                                  NText(
+                                                    text: data
+                                                        .rechargebleAccount
                                                         .toString(),
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 12,
-                                                      color: Colors.grey,
-                                                    ),
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ],
                                               ),
@@ -1354,21 +1291,22 @@ class _HomepagesState extends State<Homepages> {
                                             flex: 2,
                                             child: Row(
                                               children: [
-                                                Text(
-                                                  NumberFormat.currency(
-                                                    locale: 'en_US',
-                                                    symbol: '',
-                                                    decimalDigits: 2,
-                                                  ).format(
-                                                    double.parse(
-                                                      data.bundle!.sellingPrice
-                                                          .toString(),
-                                                    ),
-                                                  ),
-                                                  style: TextStyle(
-                                                    fontSize: 11,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                NText(
+                                                  text:
+                                                      NumberFormat.currency(
+                                                        locale: 'en_US',
+                                                        symbol: '',
+                                                        decimalDigits: 2,
+                                                      ).format(
+                                                        double.parse(
+                                                          data
+                                                              .bundle!
+                                                              .sellingPrice
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                                 SizedBox(width: 2),
                                                 Text(
@@ -1383,48 +1321,65 @@ class _HomepagesState extends State<Homepages> {
                                               ],
                                             ),
                                           ),
+
+                                          // Expanded(
+                                          //   flex: 2,
+                                          //   child: Container(
+                                          //     child: Column(
+                                          //       mainAxisAlignment:
+                                          //           MainAxisAlignment
+                                          //               .center,
+                                          //       children: [
+                                          //         Text(
+                                          //           data.status
+                                          //                       .toString() ==
+                                          //                   "0"
+                                          //               ? languagesController.tr(
+                                          //                   "PENDING",
+                                          //                 )
+                                          //               : data.status
+                                          //                         .toString() ==
+                                          //                     "1"
+                                          //               ? languagesController.tr(
+                                          //                   "CONFIRMED",
+                                          //                 )
+                                          //               : languagesController.tr(
+                                          //                   "REJECTED",
+                                          //                 ),
+                                          //           style: TextStyle(
+                                          //             fontSize: 12,
+                                          //             color: Colors
+                                          //                 .black,
+                                          //             fontWeight:
+                                          //                 FontWeight
+                                          //                     .w600,
+                                          //           ),
+                                          //         ),
+                                          //       ],
+                                          //     ),
+                                          //   ),
+                                          // ),
                                           Expanded(
                                             flex: 2,
-                                            child: Container(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  // Icon(
-                                                  //   Icons.check,
-                                                  //   color: Colors.green,
-                                                  //   size: 14,
-                                                  // ),
-                                                  Text(
-                                                    data.status.toString() ==
-                                                            "0"
-                                                        ? languagesController
-                                                              .tr("PENDING")
-                                                        : data.status
-                                                                  .toString() ==
+                                            child: Center(
+                                              child:
+                                                  data.status.toString() == "0"
+                                                  ? Lottie.asset(
+                                                      "assets/loties/pending.json",
+                                                      width: 45,
+                                                      height: 45,
+                                                      fit: BoxFit.contain,
+                                                      repeat: true,
+                                                    )
+                                                  : Image.asset(
+                                                      data.status.toString() ==
                                                               "1"
-                                                        ? languagesController
-                                                              .tr("CONFIRMED")
-                                                        : languagesController
-                                                              .tr("REJECTED"),
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                          ? "assets/icons/confirmed.png"
+                                                          : "assets/icons/rejected.png",
+                                                      width: 32,
+                                                      height: 32,
+                                                      fit: BoxFit.contain,
                                                     ),
-                                                  ),
-                                                  // Text(
-                                                  //   "2 days ago",
-                                                  //   style: TextStyle(
-                                                  //     color: Colors.green,
-                                                  //     fontSize: 10,
-                                                  //     fontWeight:
-                                                  //         FontWeight.w600,
-                                                  //   ),
-                                                  // ),
-                                                ],
-                                              ),
                                             ),
                                           ),
                                         ],

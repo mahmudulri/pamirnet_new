@@ -9,17 +9,17 @@ import '../controllers/service_controller.dart';
 import '../global_controller/languages_controller.dart';
 import '../global_controller/page_controller.dart';
 import '../utils/colors.dart';
-import 'recharge_screen.dart';
-import 'social_bundles.dart';
+import '../screens/recharge_screen.dart';
+import '../screens/social_bundles.dart';
 
-class NewServiceScreen extends StatefulWidget {
-  NewServiceScreen({super.key});
+class ProductPage extends StatefulWidget {
+  ProductPage({super.key});
 
   @override
-  State<NewServiceScreen> createState() => _NewServiceScreenState();
+  State<ProductPage> createState() => _ProductPageState();
 }
 
-class _NewServiceScreenState extends State<NewServiceScreen> {
+class _ProductPageState extends State<ProductPage> {
   NewCategorisListController categorisListController = Get.put(
     NewCategorisListController(),
   );
@@ -219,25 +219,37 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      category.categoryName.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
+                                    /// Category Title
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 4,
+                                        bottom: 10,
+                                        top: 5,
+                                      ),
+                                      child: Text(
+                                        category.categoryName.toString(),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
 
+                                    /// Services Grid
                                     GridView.builder(
                                       shrinkWrap: true,
                                       physics:
                                           const NeverScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 5,
+                                      ),
                                       gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
-                                            crossAxisSpacing: 3.0,
-                                            mainAxisSpacing: 3.0,
-                                            childAspectRatio: 0.9,
+                                            crossAxisCount: 4,
+                                            crossAxisSpacing: 8,
+                                            mainAxisSpacing: 8,
+                                            childAspectRatio: 0.80,
                                           ),
                                       itemCount: category.services?.length ?? 0,
                                       itemBuilder: (context, serviceIndex) {
@@ -275,56 +287,98 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
                                               isMainPage: false,
                                             );
                                           },
-                                          child: Card(
-                                            color: Colors.white,
-                                            child: Container(
-                                              width: 152,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.2),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 2,
-                                                    offset: const Offset(0, 0),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Center(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    CircleAvatar(
-                                                      radius: 30,
-                                                      backgroundImage:
-                                                          CachedNetworkImageProvider(
-                                                            service
-                                                                .company!
-                                                                .companyLogo
-                                                                .toString(),
-                                                          ),
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(
-                                                      service
-                                                          .company!
-                                                          .companyName
-                                                          .toString(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: const TextStyle(
-                                                        fontSize: 10,
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              /// Logo Container
+                                              Container(
+                                                height: 80,
+                                                width: 80,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.15),
+                                                      spreadRadius: 4,
+                                                      blurRadius: 4,
+                                                      offset: const Offset(
+                                                        0,
+                                                        2,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
+                                                padding: const EdgeInsets.all(
+                                                  10,
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        service
+                                                            .company
+                                                            ?.companyLogo ??
+                                                        '',
+                                                    placeholder: (context, url) {
+                                                      return const Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color:
+                                                                  Colors.grey,
+                                                              strokeWidth: 2,
+                                                            ),
+                                                      );
+                                                    },
+                                                    errorWidget:
+                                                        (context, url, error) {
+                                                          return Icon(
+                                                            Icons.error,
+                                                            size: 35,
+                                                            color: Colors
+                                                                .grey
+                                                                .shade400,
+                                                          );
+                                                        },
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+
+                                              const SizedBox(height: 5),
+
+                                              /// Company Name
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 4,
+                                                      ),
+                                                  child: Text(
+                                                    service
+                                                            .company
+                                                            ?.companyName ??
+                                                        'Unknown',
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black87,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         );
                                       },
@@ -336,7 +390,8 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
                         )
                       : const Center(
                           child: CircularProgressIndicator(
-                            color: Colors.transparent,
+                            color: Colors.grey,
+                            strokeWidth: 1,
                           ),
                         ),
                 ),

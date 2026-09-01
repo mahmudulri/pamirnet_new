@@ -522,6 +522,7 @@ class _AccountsPageState extends State<AccountsPage> {
                       );
                     }),
                   ),
+
                   SizedBox(height: 5),
                   GestureDetector(
                     onTap: () {

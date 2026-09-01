@@ -40,7 +40,7 @@ class _AnimatedBorderButtonState extends State<AnimatedBorderButton>
           return Container(
             height: 55,
             width: double.infinity,
-            padding: EdgeInsets.all(3),
+            padding: EdgeInsets.all(1),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               gradient: SweepGradient(

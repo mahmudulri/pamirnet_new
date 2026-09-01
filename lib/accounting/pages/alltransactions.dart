@@ -503,6 +503,7 @@ class _AlltransactionsState extends State<Alltransactions> {
                     ),
                   ),
                 ),
+
                 SizedBox(height: 5),
                 // GestureDetector(
                 //   onTap: () {

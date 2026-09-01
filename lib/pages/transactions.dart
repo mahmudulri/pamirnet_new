@@ -144,7 +144,11 @@ class _TransactionsState extends State<Transactions> {
                                         "assets/icons/empty.png",
                                         height: 80,
                                       ),
-                                      Text("No Data found", style: TextStyle()),
+                                      KText(
+                                        text: languagesController.tr(
+                                          "NO_DATA_FOUND",
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -274,12 +278,11 @@ class _TransactionsState extends State<Transactions> {
                               ),
                             ),
                             SizedBox(height: 3),
-                            Text(
-                              convertToDate(data.createdAt.toString()),
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey[500],
-                              ),
+                            NText(
+                              text: convertToDate(data.createdAt.toString()),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[500],
                             ),
                           ],
                         ),
@@ -288,17 +291,15 @@ class _TransactionsState extends State<Transactions> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              NumberFormat.currency(
+                            NText(
+                              text: NumberFormat.currency(
                                 locale: 'en_US',
                                 symbol: '',
                                 decimalDigits: 2,
                               ).format(double.parse(data.amount.toString())),
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: statusColor,
-                              ),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: statusColor,
                             ),
                             SizedBox(height: 3),
                             Container(
