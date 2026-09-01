@@ -1,16 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pamirnet/controllers/bundle_controller.dart';
 import 'package:pamirnet/controllers/confirm_pin_controller.dart';
 import 'package:pamirnet/controllers/dashboard_controller.dart';
+import 'package:pamirnet/controllers/history_controller.dart';
 import 'package:pamirnet/global_controller/languages_controller.dart';
 import 'package:pamirnet/screens/credit_transfer.dart';
 import 'package:pamirnet/utils/colors.dart';
 import 'package:pamirnet/widgets/button_one.dart';
 import 'package:intl/intl.dart';
 import 'package:pamirnet/widgets/ktext.dart';
+import '../accounting/accounting_base.dart';
 import '../controllers/categories_controller.dart';
 import '../controllers/company_controller.dart';
 import '../controllers/order_list_controller.dart';
@@ -46,6 +50,8 @@ class _HomepagesState extends State<Homepages> {
 
   final categorisListController = Get.find<CategorisListController>();
   final notificationController = Get.find<NotificationController>();
+  final historyController = Get.find<HistoryController>();
+  final ScrollController scrollController = ScrollController();
 
   final ConversationController conversationController = Get.put(
     ConversationController(),
@@ -66,6 +72,10 @@ class _HomepagesState extends State<Homepages> {
   @override
   void initState() {
     super.initState();
+    historyController.finalList.clear();
+
+    historyController.initialpage = 1;
+    historyController.fetchHistory();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       confirmPinController.numberController.clear();
@@ -79,13 +89,44 @@ class _HomepagesState extends State<Homepages> {
       box.write("orderstatus", "");
       box.write("search_target", "");
 
-      orderlistController.finalList.clear();
-      orderlistController.initialpage = 1;
-      orderlistController.fetchOrderlistdata();
+      // orderlistController.finalList.clear();
+      // orderlistController.initialpage = 1;
+      // orderlistController.fetchOrderlistdata();
     });
   }
 
-  OrderlistController orderlistController = Get.put(OrderlistController());
+  Future<void> refresh() async {
+    final int totalPages =
+        historyController.allorderlist.value.payload?.pagination!.totalPages ??
+        0;
+    final int currentPage = historyController.initialpage;
+
+    // Prevent loading more pages if we've reached the last page
+    if (currentPage >= totalPages) {
+      print(
+        "End..........................................End.....................",
+      );
+      return;
+    }
+
+    // Check if the scroll position is at the bottom
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      historyController.initialpage++;
+
+      // Prevent fetching if the next page exceeds total pages
+      if (historyController.initialpage <= totalPages) {
+        print("Load More...................");
+        historyController.fetchHistory();
+      } else {
+        historyController.initialpage =
+            totalPages; // Reset to the last valid page
+        print("Already on the last page");
+      }
+    }
+  }
+
+  // OrderlistController orderlistController = Get.put(OrderlistController());
 
   final confirmPinController = Get.find<ConfirmPinController>();
 
@@ -279,128 +320,34 @@ class _HomepagesState extends State<Homepages> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Dialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Colors.blue.shade50,
-                                      Colors.purple.shade50,
-                                    ],
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    // Icon
-                                    Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.blue.withOpacity(0.2),
-                                            blurRadius: 10,
-                                            spreadRadius: 2,
-                                          ),
-                                        ],
-                                      ),
-                                      child: Icon(
-                                        Icons.rocket_launch_rounded,
-                                        size: 48,
-                                        color: Colors.blue.shade600,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-
-                                    // Title
-                                    KText(
-                                      text: languagesController.tr(
-                                        "COMING_SOON",
-                                      ),
-
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey.shade800,
-                                    ),
-                                    const SizedBox(height: 12),
-
-                                    // Description
-                                    KText(
-                                      text: languagesController.tr(
-                                        "COMING_SOON_TITLE",
-                                      ),
-                                      textAlign: TextAlign.center,
-
-                                      fontSize: 14,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                    const SizedBox(height: 24),
-
-                                    // Close Button
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blue.shade600,
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 32,
-                                          vertical: 12,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        elevation: 2,
-                                      ),
-                                      child: KText(
-                                        text: languagesController.tr("CLOSE"),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
+                        print("object");
+                        Get.to(() => AccountingBaseScreen());
                       },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.white,
-                            child: Padding(
-                              padding: EdgeInsets.all(15.0),
-                              child: Image.asset(
-                                "assets/icons/wallet-money.png",
+                      child: Container(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.white,
+                              child: Padding(
+                                padding: EdgeInsets.all(15.0),
+                                child: Image.asset(
+                                  "assets/icons/wallet-money.png",
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 5),
-                          KText(
-                            text: languagesController.tr("ACCOUNTING"),
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primaryColor,
-                          ),
-                        ],
+                            SizedBox(height: 5),
+                            GestureDetector(
+                              onTap: () {},
+                              child: KText(
+                                text: languagesController.tr("ACCOUNTING"),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -957,213 +904,538 @@ class _HomepagesState extends State<Homepages> {
                 ],
               ),
               SizedBox(height: 8),
-              Container(
-                height: 350,
-                width: screenWidth,
-
-                child: Obx(
-                  () => orderlistController.isLoading.value == false
-                      ? ListView.separated(
-                          physics: BouncingScrollPhysics(),
-                          separatorBuilder: (context, index) {
-                            return SizedBox(height: 5);
-                          },
-                          itemCount: orderlistController.finalList.length,
-                          itemBuilder: (context, index) {
-                            final data = orderlistController.finalList[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => OrderDetailsScreen(
-                                      createDate: data.createdAt.toString(),
-                                      status: data.status.toString(),
-                                      rejectReason: data.rejectReason
-                                          .toString(),
-                                      companyName: data
-                                          .bundle!
-                                          .service!
-                                          .company!
-                                          .companyName
-                                          .toString(),
-                                      bundleTitle: data.bundle!.bundleTitle!
-                                          .toString(),
-                                      rechargebleAccount: data
-                                          .rechargebleAccount!
-                                          .toString(),
-                                      validityType: data.bundle!.validityType!
-                                          .toString(),
-                                      sellingPrice: data.bundle!.sellingPrice
-                                          .toString(),
-                                      orderID: data.id!.toString(),
-                                      resellerName: dashboardController
-                                          .alldashboardData
-                                          .value
-                                          .data!
-                                          .userInfo!
-                                          .contactName
-                                          .toString(),
-                                      resellerPhone: dashboardController
-                                          .alldashboardData
-                                          .value
-                                          .data!
-                                          .userInfo!
-                                          .phone
-                                          .toString(),
-                                      companyLogo: data
-                                          .bundle!
-                                          .service!
-                                          .company!
-                                          .companyLogo
-                                          .toString(),
+              Obx(
+                () => historyController.isLoading.value == true
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox(),
+              ),
+              Obx(
+                () => historyController.isLoading.value == false
+                    ? Container(
+                        child:
+                            historyController
+                                .allorderlist
+                                .value
+                                .data!
+                                .orders
+                                .isNotEmpty
+                            ? SizedBox()
+                            : Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/icons/empty.png",
+                                      height: 80,
                                     ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                height: 60,
-                                width: screenWidth,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.grey.shade300,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.listbuilderboxColor,
+                                    Text("No Data found"),
+                                  ],
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(
-                                              data
+                              ),
+                      )
+                    : SizedBox(),
+              ),
+              Container(
+                height: 400,
+                width: screenWidth,
+                child: Obx(
+                  () =>
+                      historyController.isLoading.value == false &&
+                          historyController.finalList.isNotEmpty
+                      ? RefreshIndicator(
+                          onRefresh: refresh,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: ListView.separated(
+                              padding: EdgeInsets.all(0.0),
+                              shrinkWrap: false,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              controller: scrollController,
+                              separatorBuilder: (context, index) {
+                                return SizedBox(height: 5);
+                              },
+                              itemCount: historyController.finalList.length,
+                              itemBuilder: (context, index) {
+                                final data = historyController.finalList[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrderDetailsScreen(
+                                              createDate: data.createdAt
+                                                  .toString(),
+                                              status: data.status.toString(),
+                                              rejectReason: data.rejectReason
+                                                  .toString(),
+                                              companyName: data
+                                                  .bundle!
+                                                  .service!
+                                                  .company!
+                                                  .companyName
+                                                  .toString(),
+                                              bundleTitle: data
+                                                  .bundle!
+                                                  .bundleTitle!
+                                                  .toString(),
+                                              rechargebleAccount: data
+                                                  .rechargebleAccount!
+                                                  .toString(),
+                                              validityType:
+                                                  data.bundle?.validityType
+                                                      ?.toString() ??
+                                                  "",
+                                              sellingPrice: data
+                                                  .bundle!
+                                                  .sellingPrice
+                                                  .toString(),
+                                              orderID: data.id!.toString(),
+                                              resellerName: dashboardController
+                                                  .alldashboardData
+                                                  .value
+                                                  .data!
+                                                  .userInfo!
+                                                  .contactName
+                                                  .toString(),
+                                              resellerPhone: dashboardController
+                                                  .alldashboardData
+                                                  .value
+                                                  .data!
+                                                  .userInfo!
+                                                  .phone
+                                                  .toString(),
+                                              companyLogo: data
                                                   .bundle!
                                                   .service!
                                                   .company!
                                                   .companyLogo
                                                   .toString(),
                                             ),
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
                                       ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 5,
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    width: screenWidth,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.grey.shade200,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: AppColors.listbuilderboxColor,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image:
+                                                    CachedNetworkImageProvider(
+                                                      data
+                                                          .bundle!
+                                                          .service!
+                                                          .company!
+                                                          .companyLogo
+                                                          .toString(),
+                                                    ),
+                                              ),
+                                              shape: BoxShape.circle,
+                                            ),
                                           ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  data.bundle!.bundleTitle
-                                                      .toString(),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 5,
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Flexible(
+                                                    child: KText(
+                                                      text: data
+                                                          .bundle!
+                                                          .bundleTitle
+                                                          .toString(),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    data.rechargebleAccount
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  NumberFormat.currency(
+                                                    locale: 'en_US',
+                                                    symbol: '',
+                                                    decimalDigits: 2,
+                                                  ).format(
+                                                    double.parse(
+                                                      data.bundle!.sellingPrice
+                                                          .toString(),
+                                                    ),
+                                                  ),
                                                   style: TextStyle(
+                                                    fontSize: 11,
                                                     fontWeight: FontWeight.w600,
-                                                    fontSize: 14,
                                                   ),
                                                 ),
-                                              ),
-                                              Text(
-                                                data.rechargebleAccount
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 12,
-                                                  color: Colors.grey,
+                                                SizedBox(width: 2),
+                                                Text(
+                                                  " " +
+                                                      box.read("currency_code"),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 11,
+                                                    color: Colors.grey,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              data.bundle!.sellingPrice
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14,
-                                              ),
+                                              ],
                                             ),
-                                            SizedBox(width: 2),
-                                            Text(
-                                              data
-                                                  .bundle!
-                                                  .preferedCurrency!
-                                                  .code
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              // Icon(
-                                              //   Icons.check,
-                                              //   color: Colors.green,
-                                              //   size: 14,
-                                              // ),
-                                              Text(
-                                                data.status.toString() == "0"
-                                                    ? "pending"
-                                                    : data.status.toString() ==
-                                                          "1"
-                                                    ? "confirmed"
-                                                    : "rejected",
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              // Text(
-                                              //   "2 days ago",
-                                              //   style: TextStyle(
-                                              //     color: Colors.green,
-                                              //     fontSize: 10,
-                                              //     fontWeight:
-                                              //         FontWeight.w600,
-                                              //   ),
-                                              // ),
-                                            ],
                                           ),
-                                        ),
+
+                                          // Expanded(
+                                          //   flex: 2,
+                                          //   child: Container(
+                                          //     child: Column(
+                                          //       mainAxisAlignment:
+                                          //           MainAxisAlignment
+                                          //               .center,
+                                          //       children: [
+                                          //         Text(
+                                          //           data.status
+                                          //                       .toString() ==
+                                          //                   "0"
+                                          //               ? languagesController.tr(
+                                          //                   "PENDING",
+                                          //                 )
+                                          //               : data.status
+                                          //                         .toString() ==
+                                          //                     "1"
+                                          //               ? languagesController.tr(
+                                          //                   "CONFIRMED",
+                                          //                 )
+                                          //               : languagesController.tr(
+                                          //                   "REJECTED",
+                                          //                 ),
+                                          //           style: TextStyle(
+                                          //             fontSize: 12,
+                                          //             color: Colors
+                                          //                 .black,
+                                          //             fontWeight:
+                                          //                 FontWeight
+                                          //                     .w600,
+                                          //           ),
+                                          //         ),
+                                          //       ],
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Center(
+                                              child:
+                                                  data.status.toString() == "0"
+                                                  ? Lottie.asset(
+                                                      "assets/loties/pending.json",
+                                                      width: 45,
+                                                      height: 45,
+                                                      fit: BoxFit.contain,
+                                                      repeat: true,
+                                                    )
+                                                  : Image.asset(
+                                                      data.status.toString() ==
+                                                              "1"
+                                                          ? "assets/icons/confirmed.png"
+                                                          : "assets/icons/rejected.png",
+                                                      width: 32,
+                                                      height: 32,
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          },
+                                );
+                              },
+                            ),
+                          ),
                         )
-                      : Center(child: CircularProgressIndicator()),
+                      : historyController.finalList.isEmpty
+                      ? SizedBox()
+                      : RefreshIndicator(
+                          onRefresh: refresh,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: ListView.separated(
+                              padding: EdgeInsets.all(0.0),
+                              shrinkWrap: false,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              controller: scrollController,
+                              separatorBuilder: (context, index) {
+                                return SizedBox(height: 5);
+                              },
+                              itemCount: historyController.finalList.length,
+                              itemBuilder: (context, index) {
+                                final data = historyController.finalList[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrderDetailsScreen(
+                                              createDate: data.createdAt
+                                                  .toString(),
+                                              status: data.status.toString(),
+                                              rejectReason: data.rejectReason
+                                                  .toString(),
+                                              companyName: data
+                                                  .bundle!
+                                                  .service!
+                                                  .company!
+                                                  .companyName
+                                                  .toString(),
+                                              bundleTitle: data
+                                                  .bundle!
+                                                  .bundleTitle!
+                                                  .toString(),
+                                              rechargebleAccount: data
+                                                  .rechargebleAccount!
+                                                  .toString(),
+                                              validityType:
+                                                  data.bundle?.validityType
+                                                      ?.toString() ??
+                                                  "",
+                                              sellingPrice: data
+                                                  .bundle!
+                                                  .sellingPrice
+                                                  .toString(),
+                                              orderID: data.id!.toString(),
+                                              resellerName: dashboardController
+                                                  .alldashboardData
+                                                  .value
+                                                  .data!
+                                                  .userInfo!
+                                                  .contactName
+                                                  .toString(),
+                                              resellerPhone: dashboardController
+                                                  .alldashboardData
+                                                  .value
+                                                  .data!
+                                                  .userInfo!
+                                                  .phone
+                                                  .toString(),
+                                              companyLogo: data
+                                                  .bundle!
+                                                  .service!
+                                                  .company!
+                                                  .companyLogo
+                                                  .toString(),
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    width: screenWidth,
+                                    decoration: BoxDecoration(
+                                      // border: Border.all(
+                                      //   width: 1,
+                                      //   color: Colors.grey,
+                                      // ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: AppColors.listbuilderboxColor,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image:
+                                                    CachedNetworkImageProvider(
+                                                      data
+                                                          .bundle!
+                                                          .service!
+                                                          .company!
+                                                          .companyLogo
+                                                          .toString(),
+                                                    ),
+                                              ),
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 5,
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                      data.bundle!.bundleTitle
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    data.rechargebleAccount
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  NumberFormat.currency(
+                                                    locale: 'en_US',
+                                                    symbol: '',
+                                                    decimalDigits: 2,
+                                                  ).format(
+                                                    double.parse(
+                                                      data.bundle!.sellingPrice
+                                                          .toString(),
+                                                    ),
+                                                  ),
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 2),
+                                                Text(
+                                                  " " +
+                                                      box.read("currency_code"),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 11,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Container(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  // Icon(
+                                                  //   Icons.check,
+                                                  //   color: Colors.green,
+                                                  //   size: 14,
+                                                  // ),
+                                                  Text(
+                                                    data.status.toString() ==
+                                                            "0"
+                                                        ? languagesController
+                                                              .tr("PENDING")
+                                                        : data.status
+                                                                  .toString() ==
+                                                              "1"
+                                                        ? languagesController
+                                                              .tr("CONFIRMED")
+                                                        : languagesController
+                                                              .tr("REJECTED"),
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  // Text(
+                                                  //   "2 days ago",
+                                                  //   style: TextStyle(
+                                                  //     color: Colors.green,
+                                                  //     fontSize: 10,
+                                                  //     fontWeight:
+                                                  //         FontWeight.w600,
+                                                  //   ),
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
                 ),
               ),
             ],

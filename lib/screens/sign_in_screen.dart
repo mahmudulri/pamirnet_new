@@ -393,64 +393,110 @@ class _SignInScreenState extends State<SignInScreen> {
                             //   ],
                             // ),
                             SizedBox(height: 15),
-                            GestureDetector(
-                              onTap: () async {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => BaseScreen(),
-                                //   ),
-                                // );
-                                if (signInController
-                                        .usernameController
-                                        .text
-                                        .isEmpty ||
-                                    signInController
-                                        .passwordController
-                                        .text
-                                        .isEmpty) {
-                                  Get.snackbar("Oops!", "Fill the text fields");
-                                } else {
-                                  print("Attempting login...");
-                                  await signInController.signIn();
+                            Obx(
+                              () => GestureDetector(
+                                onTap: signInController.isLoading.value
+                                    ? null
+                                    : () async {
+                                        if (signInController
+                                                .usernameController
+                                                .text
+                                                .trim()
+                                                .isEmpty ||
+                                            signInController
+                                                .passwordController
+                                                .text
+                                                .isEmpty) {
+                                          Get.snackbar(
+                                            "Oops!",
+                                            "Fill the text fields",
+                                          );
+                                          return;
+                                        }
 
-                                  if (signInController.loginsuccess.value ==
-                                      false) {
-                                    dashboardController.fetchDashboardData();
+                                        print("Attempting login...");
 
-                                    Get.toNamed(basescreen);
-                                  } else {
-                                    print("Navigation conditions not met.");
-                                  }
-                                }
-                              },
-                              child: Container(
-                                height: screenHeight * 0.060,
-                                width: screenWidth,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: Center(
-                                  child: Obx(
-                                    () => Text(
-                                      signInController.isLoading.value == false
-                                          ? languagesController.tr("LOGIN")
-                                          : languagesController.tr(
-                                              "PLEASE_WAIT",
+                                        await signInController.signIn();
+
+                                        if (signInController
+                                                .loginsuccess
+                                                .value ==
+                                            false) {
+                                          await dashboardController
+                                              .fetchDashboardData();
+                                          Get.toNamed(basescreen);
+                                        } else {
+                                          print(
+                                            "Navigation conditions not met.",
+                                          );
+                                        }
+                                      },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  height: screenHeight * 0.060,
+                                  width: screenWidth,
+                                  decoration: BoxDecoration(
+                                    // Loading হলে grey
+                                    color: signInController.isLoading.value
+                                        ? Colors.grey.shade400
+                                        : AppColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: Center(
+                                    child: signInController.isLoading.value
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2.5,
+                                                      color: Colors.white,
+                                                    ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                languagesController.tr(
+                                                  "PLEASE_WAIT",
+                                                ),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
+                                                      screenHeight * 0.020,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily:
+                                                      box
+                                                              .read("language")
+                                                              .toString() ==
+                                                          "Fa"
+                                                      ? Get.find<
+                                                              FontController
+                                                            >()
+                                                            .currentFont
+                                                      : null,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Text(
+                                            languagesController.tr("LOGIN"),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenHeight * 0.024,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily:
+                                                  box
+                                                          .read("language")
+                                                          .toString() ==
+                                                      "Fa"
+                                                  ? Get.find<FontController>()
+                                                        .currentFont
+                                                  : null,
                                             ),
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: screenHeight * 0.024,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily:
-                                            box.read("language").toString() ==
-                                                "Fa"
-                                            ? Get.find<FontController>()
-                                                  .currentFont
-                                            : null,
-                                      ),
-                                    ),
+                                          ),
                                   ),
                                 ),
                               ),

@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:pamirnet/global_controller/fcm_device_token_controller.dart';
 import 'package:pamirnet/utils/api_endpoints.dart';
 
 import '../global_controller/languages_controller.dart';
@@ -15,6 +16,9 @@ class SignInController extends GetxController {
   TextEditingController passwordController = TextEditingController();
 
   LanguagesController languagesController = Get.put(LanguagesController());
+
+  final FcmDeviceTokenController fcmDeviceTokenController =
+      Get.find<FcmDeviceTokenController>();
   String resellerCurrencyRate = "";
 
   RxBool isLoading = false.obs;
@@ -79,6 +83,17 @@ class SignInController extends GetxController {
           "resellerrate",
           results["data"]["user_info"]["currency"]["exchange_rate_per_usd"],
         );
+
+        try {
+          final bool fcmTokenSaved = await fcmDeviceTokenController
+              .sendCurrentTokenToServer();
+
+          debugPrint('FCM device token saved: $fcmTokenSaved');
+        } catch (error, stackTrace) {
+          debugPrint('Unable to register FCM token: $error');
+
+          debugPrintStack(stackTrace: stackTrace);
+        }
 
         if (results["success"] == true) {
           loginsuccess.value = false;

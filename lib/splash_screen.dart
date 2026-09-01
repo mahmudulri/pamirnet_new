@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'controllers/dashboard_controller.dart';
-import 'global_controller/font_controller.dart';
 import 'global_controller/languages_controller.dart';
 import 'routes/routes.dart';
 import 'utils/colors.dart';

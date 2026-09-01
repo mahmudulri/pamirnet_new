@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../controllers/check_internet_controller.dart';
+import '../global_controller/check_internet_controller.dart';
 
 class DependencyInjection {
   static void init() {

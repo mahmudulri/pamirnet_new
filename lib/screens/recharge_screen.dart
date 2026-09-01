@@ -1,10 +1,8 @@
-import 'dart:math';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pamirnet/controllers/bundle_controller.dart';
 import 'package:pamirnet/controllers/confirm_pin_controller.dart';
 import 'package:pamirnet/global_controller/languages_controller.dart';
@@ -18,7 +16,9 @@ import '../global_controller/page_controller.dart';
 import '../widgets/animated_card.dart';
 
 class RechargeScreen extends StatefulWidget {
-  RechargeScreen({super.key});
+  String? catName;
+  final bool enableOperatorLookup;
+  RechargeScreen({super.key, this.catName, required this.enableOperatorLookup});
 
   @override
   State<RechargeScreen> createState() => _RechargeScreenState();
@@ -45,6 +45,12 @@ class _RechargeScreenState extends State<RechargeScreen> {
 
   String search = "";
   String inputNumber = "";
+  bool isOperatorLookupConfirmed = false;
+
+  Timer? _lookupDebounce;
+
+  String? originalCompanyId;
+  String? detectedCompanyId;
 
   final box = GetStorage();
 
@@ -57,91 +63,309 @@ class _RechargeScreenState extends State<RechargeScreen> {
   final serviceController = Get.find<ServiceController>();
   final bundleController = Get.find<BundleController>();
 
-  Future<void> refresh() async {
-    final int totalPages =
-        bundleController.allbundleslist.value.payload?.pagination.totalPages ??
-        0;
-    final int currentPage = bundleController.initialpage;
+  int get _maximumPhoneLength {
+    final dynamic storedLength = box.read("maxlength");
 
-    // Prevent loading more pages if we've reached the last page
-    if (currentPage >= totalPages) {
-      print(
-        "End..........................................End.....................",
-      );
+    return int.tryParse(storedLength?.toString() ?? "") ?? 0;
+  }
+
+  bool get isOperatorLookupEnabled {
+    final dynamic storedValue = box.read("enable_operator_lookup");
+
+    if (storedValue is bool) {
+      return storedValue;
+    }
+
+    if (storedValue is int) {
+      return storedValue == 1;
+    }
+
+    final String normalizedValue =
+        storedValue?.toString().trim().toLowerCase() ?? "";
+
+    if (normalizedValue == "true" ||
+        normalizedValue == "1" ||
+        normalizedValue == "yes") {
+      return true;
+    }
+
+    if (normalizedValue == "false" ||
+        normalizedValue == "0" ||
+        normalizedValue == "no") {
+      return false;
+    }
+
+    return widget.enableOperatorLookup;
+  }
+
+  Future<void> refresh() async {
+    if (bundleController.isLoading.value ||
+        bundleController.isLookupLoading.value) {
       return;
     }
 
-    // Check if the scroll position is at the bottom
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
-      bundleController.initialpage++;
-
-      // Prevent fetching if the next page exceeds total pages
-      if (bundleController.initialpage <= totalPages) {
-        print("Load More...................");
-        bundleController.fetchallbundles();
-      } else {
-        bundleController.initialpage =
-            totalPages; // Reset to the last valid page
-        print("Already on the last page");
-      }
+    if (!scrollController.hasClients) {
+      return;
     }
+
+    final bool reachedBottom =
+        scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent;
+
+    if (!reachedBottom) return;
+
+    if (isOperatorLookupEnabled) {
+      return;
+    }
+
+    final int totalPages =
+        bundleController.allbundleslist.value.payload?.pagination.totalPages ??
+        0;
+
+    if (bundleController.initialpage >= totalPages) {
+      return;
+    }
+
+    bundleController.initialpage++;
+
+    await bundleController.fetchallbundles();
   }
 
   void _onTextChanged() {
     if (!mounted) return;
 
-    setState(() {
-      inputNumber = confirmPinController.numberController.text;
+    final String number = confirmPinController.numberController.text.trim();
 
-      // Print debug information
-      print("Input Number: $inputNumber");
+    final int requiredLength = _maximumPhoneLength;
 
-      if (inputNumber.isEmpty) {
-        box.write("company_id", "");
-        bundleController.initialpage = 1;
-        bundleController.finalList.clear();
-        bundleController.fetchallbundles();
-        // Handle case where text field is cleared
-        print("Text field is empty. Showing all services.");
+    final services =
+        serviceController.allserviceslist.value.data?.services ?? [];
 
-        // Clear the company_id from the box
+    String? matchedOriginalCompanyId;
 
-        // Reset bundleController and fetch all bundles
-      } else if (inputNumber.length == 3 || inputNumber.length == 4) {
-        final services = serviceController.allserviceslist.value.data!.services;
+    // Prefix অনুযায়ী original operator detect
+    for (final service in services) {
+      final companyCodes = service.company?.companycodes ?? [];
 
-        // Print number of services for debugging
-        print("Number of services: ${services.length}");
+      for (final code in companyCodes) {
+        final String reservedDigit =
+            code.reservedDigit?.toString().trim() ?? "";
 
-        bool matchFound = false;
-
-        for (var service in services) {
-          for (var code in service.company!.companycodes!) {
-            // Print reservedDigit for debugging
-            print("Checking reservedDigit: ${code.reservedDigit}");
-
-            if (code.reservedDigit == inputNumber) {
-              box.write("company_id", service.companyId);
-              bundleController.initialpage = 1;
-              bundleController.finalList.clear();
-              setState(() {
-                bundleController.fetchallbundles();
-              });
-
-              print("Matched company_id: ${service.companyId}");
-              matchFound = true;
-              break; // Exit the inner loop
-            }
-          }
-          if (matchFound) break; // Exit the outer loop
+        if (reservedDigit.isEmpty) {
+          continue;
         }
 
-        if (!matchFound) {
-          print("No match found for input number: $inputNumber");
+        final String normalizedNumber = number.startsWith("0")
+            ? number.substring(1)
+            : number;
+
+        final String normalizedReservedDigit = reservedDigit.startsWith("0")
+            ? reservedDigit.substring(1)
+            : reservedDigit;
+
+        final bool prefixMatched =
+            number.startsWith(reservedDigit) ||
+            normalizedNumber.startsWith(normalizedReservedDigit);
+
+        if (prefixMatched) {
+          matchedOriginalCompanyId = service.companyId?.toString();
+
+          break;
         }
       }
+
+      if (matchedOriginalCompanyId != null) {
+        break;
+      }
+    }
+
+    _lookupDebounce?.cancel();
+
+    setState(() {
+      inputNumber = number;
+      originalCompanyId = matchedOriginalCompanyId;
+
+      // নতুন number typing শুরু হলে পুরোনো lookup result reset
+      detectedCompanyId = null;
+      isOperatorLookupConfirmed = false;
     });
+
+    print("Original company id: $originalCompanyId");
+
+    if (!isOperatorLookupEnabled) {
+      _handleNormalNumber(number);
+      return;
+    }
+
+    // Number empty
+    if (number.isEmpty) {
+      setState(() {
+        originalCompanyId = null;
+        detectedCompanyId = null;
+        isOperatorLookupConfirmed = false;
+        selectedIndex = -1;
+      });
+
+      bundleController.initialpage = 1;
+      bundleController.finalList.clear();
+
+      bundleController.fetchallbundles();
+      return;
+    }
+
+    /*
+   * Full number না হওয়া পর্যন্ত lookup API call হবে না।
+   * শুধু prefix অনুযায়ী original operator দেখা যাবে।
+   */
+    if (requiredLength <= 0 || number.length != requiredLength) {
+      print(
+        "Waiting for full number: "
+        "${number.length}/$requiredLength",
+      );
+
+      return;
+    }
+
+    // Full number হলে lookup API call
+    _lookupDebounce = Timer(const Duration(milliseconds: 500), () async {
+      if (!mounted) return;
+
+      final String requestedNumber = confirmPinController.numberController.text
+          .trim();
+
+      if (requestedNumber.length != requiredLength) {
+        return;
+      }
+
+      bundleController.initialpage = 1;
+      bundleController.finalList.clear();
+
+      try {
+        await bundleController.fetchlookupbundles(requestedNumber);
+
+        if (!mounted) return;
+
+        final String latestNumber = confirmPinController.numberController.text
+            .trim();
+
+        // API response আসার আগে number change হলে ignore
+        if (latestNumber != requestedNumber) {
+          return;
+        }
+
+        String? lookupCompanyId;
+
+        if (bundleController.finalList.isNotEmpty) {
+          final firstBundle = bundleController.finalList.first;
+
+          lookupCompanyId = firstBundle.service?.company?.id?.toString();
+        }
+
+        setState(() {
+          detectedCompanyId = lookupCompanyId;
+
+          // API response শেষ হওয়ার পরেই confirmed হবে
+          isOperatorLookupConfirmed = lookupCompanyId != null;
+        });
+
+        final bool isPorted =
+            isOperatorLookupConfirmed &&
+            originalCompanyId != null &&
+            detectedCompanyId != null &&
+            originalCompanyId != detectedCompanyId;
+
+        print("Full number lookup completed");
+
+        print(
+          "Original company id: "
+          "$originalCompanyId",
+        );
+
+        print(
+          "Detected company id: "
+          "$detectedCompanyId",
+        );
+
+        print("Is ported number: $isPorted");
+      } catch (e) {
+        if (!mounted) return;
+
+        setState(() {
+          detectedCompanyId = null;
+          isOperatorLookupConfirmed = false;
+        });
+
+        print("Operator lookup failed: $e");
+      }
+    });
+  }
+
+  void _handleNormalNumber(String number) {
+    _lookupDebounce?.cancel();
+
+    if (number.isEmpty) {
+      box.write("company_id", "");
+
+      selectedIndex = -1;
+
+      bundleController.initialpage = 1;
+      bundleController.finalList.clear();
+
+      bundleController.fetchallbundles();
+
+      return;
+    }
+
+    if (number.length != 3 && number.length != 4) {
+      return;
+    }
+
+    final services =
+        serviceController.allserviceslist.value.data?.services ?? [];
+
+    bool matchFound = false;
+
+    for (final service in services) {
+      final companyCodes = service.company?.companycodes ?? [];
+
+      for (final code in companyCodes) {
+        final String reservedDigit = code.reservedDigit?.toString() ?? "";
+
+        print(
+          "Checking reservedDigit: "
+          "$reservedDigit",
+        );
+
+        if (reservedDigit == number) {
+          box.write("company_id", service.companyId);
+
+          bundleController.initialpage = 1;
+          bundleController.finalList.clear();
+
+          bundleController.fetchallbundles();
+
+          print(
+            "Matched company_id: "
+            "${service.companyId} "
+            "with input: $number",
+          );
+
+          matchFound = true;
+          break;
+        }
+      }
+
+      if (matchFound) {
+        break;
+      }
+    }
+
+    if (!matchFound) {
+      print(
+        "No company matched for input: "
+        "$number",
+      );
+    }
   }
 
   @override
@@ -172,7 +396,6 @@ class _RechargeScreenState extends State<RechargeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Mypagecontroller mypagecontroller = Get.find();
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -200,24 +423,14 @@ class _RechargeScreenState extends State<RechargeScreen> {
                       child: Container(height: 1, color: Colors.grey.shade300),
                     ),
                     SizedBox(width: 8),
-                    Obx(
-                      () => GestureDetector(
-                        onTap: () {
-                          // print(box.read("country_id"));
-                          bundleController.fetchallbundles();
-                        },
-                        child: Text(
-                          languagesController
-                              .tr("INTERNET_PACKAGE")
-                              .toUpperCase(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: screenHeight * 0.020,
-                            fontFamily: box.read("language").toString() == "Fa"
-                                ? Get.find<FontController>().currentFont
-                                : null,
-                          ),
-                        ),
+                    Text(
+                      widget.catName.toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenHeight * 0.022,
+                        fontFamily: box.read("language").toString() == "Fa"
+                            ? Get.find<FontController>().currentFont
+                            : null,
                       ),
                     ),
                     SizedBox(width: 8),
@@ -235,16 +448,16 @@ class _RechargeScreenState extends State<RechargeScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 8),
                 Obx(
                   () => CustomTextField(
                     confirmPinController: confirmPinController.numberController,
                     languageData: languagesController.tr("ENTER_PHONE_NUMBER"),
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 5),
                 Container(
-                  height: 50,
+                  height: 62,
                   color: Colors.transparent,
                   width: screenWidth,
                   child: Obx(() {
@@ -257,14 +470,36 @@ class _RechargeScreenState extends State<RechargeScreen> {
                             ?.services ??
                         [];
 
-                    // Show all services if input is empty, otherwise filter
+                    final bool isFullNumber =
+                        _maximumPhoneLength > 0 &&
+                        inputNumber.length == _maximumPhoneLength;
+
                     final filteredServices = inputNumber.isEmpty
                         ? services
+                        : isOperatorLookupEnabled
+                        ? services.where((service) {
+                            final String currentCompanyId =
+                                service.companyId?.toString() ?? "";
+
+                            final bool isOriginal =
+                                originalCompanyId != null &&
+                                currentCompanyId == originalCompanyId;
+
+                            final bool isDetected =
+                                isFullNumber &&
+                                isOperatorLookupConfirmed &&
+                                detectedCompanyId != null &&
+                                currentCompanyId == detectedCompanyId;
+
+                            return isOriginal || isDetected;
+                          }).toList()
                         : services.where((service) {
                             return service.company?.companycodes?.any((code) {
-                                  final reservedDigit =
-                                      code.reservedDigit ?? '';
-                                  return inputNumber.startsWith(reservedDigit);
+                                  final String reservedDigit =
+                                      code.reservedDigit?.toString() ?? "";
+
+                                  return reservedDigit.isNotEmpty &&
+                                      inputNumber.startsWith(reservedDigit);
                                 }) ??
                                 false;
                           }).toList();
@@ -281,48 +516,149 @@ class _RechargeScreenState extends State<RechargeScreen> {
                               itemBuilder: (context, index) {
                                 final data = filteredServices[index];
 
+                                final String currentCompanyId =
+                                    data.companyId?.toString() ?? "";
+
+                                final bool isDetectedOperator =
+                                    isOperatorLookupEnabled &&
+                                    isOperatorLookupConfirmed &&
+                                    inputNumber.length == _maximumPhoneLength &&
+                                    detectedCompanyId != null &&
+                                    currentCompanyId == detectedCompanyId;
+                                final bool isPorted =
+                                    isOperatorLookupConfirmed &&
+                                    inputNumber.length == _maximumPhoneLength &&
+                                    originalCompanyId != null &&
+                                    detectedCompanyId != null &&
+                                    originalCompanyId != detectedCompanyId;
+
+                                final bool showPortedBadge =
+                                    isDetectedOperator && isPorted;
+                                final bool isSelected =
+                                    isOperatorLookupEnabled &&
+                                        isOperatorLookupConfirmed &&
+                                        inputNumber.length ==
+                                            _maximumPhoneLength
+                                    ? isDetectedOperator
+                                    : selectedIndex == index;
+
                                 return GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
+                                    final bool isFullNumber =
+                                        _maximumPhoneLength > 0 &&
+                                        inputNumber.length ==
+                                            _maximumPhoneLength;
+
+                                    final bool shouldLockOperatorSelection =
+                                        isOperatorLookupEnabled &&
+                                        isFullNumber &&
+                                        isOperatorLookupConfirmed;
+
+                                    if (shouldLockOperatorSelection) {
+                                      return;
+                                    }
+
                                     setState(() {
                                       bundleController.initialpage = 1;
                                       bundleController.finalList.clear();
+
                                       selectedIndex = index;
+
                                       box.write("company_id", data.companyId);
-                                      bundleController.fetchallbundles();
                                     });
+
+                                    await bundleController.fetchallbundles();
                                   },
-                                  child: Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                      color: selectedIndex == index
-                                          ? Color(0xff34495e)
-                                          : Colors.grey.shade100,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 5,
-                                        vertical: 5,
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            data.company?.companyLogo ?? '',
-                                        placeholder: (context, url) {
-                                          print('Loading image: $url');
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
+                                  child: SizedBox(
+                                    width: showPortedBadge ? 67 : 52,
+                                    height: 62,
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Positioned(
+                                          left: 1,
+                                          bottom: 1,
+                                          child: Container(
+                                            height: 50,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                              color: isSelected
+                                                  ? const Color(0xffFFFFFF)
+                                                  : Colors.grey.shade300,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: showPortedBadge
+                                                    ? Colors.orange
+                                                    : Colors.transparent,
+                                                width: showPortedBadge
+                                                    ? 1.5
+                                                    : 0,
+                                              ),
                                             ),
-                                          );
-                                        },
-                                        errorWidget: (context, url, error) {
-                                          print(
-                                            'Error loading image: $url, error: $error',
-                                          );
-                                          return Icon(Icons.error);
-                                        },
-                                      ),
+                                            padding: const EdgeInsets.all(5),
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  data.company?.companyLogo ??
+                                                  "",
+                                              fit: BoxFit.contain,
+                                              placeholder: (_, __) {
+                                                return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 1,
+                                                      ),
+                                                );
+                                              },
+                                              errorWidget: (_, __, ___) {
+                                                return const Icon(
+                                                  Icons.error_outline,
+                                                  size: 20,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+
+                                        if (showPortedBadge)
+                                          Positioned(
+                                            right: 0,
+                                            top: 0,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                    vertical: 2,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.orange,
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 1,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.12),
+                                                    blurRadius: 3,
+                                                    offset: const Offset(0, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: const Text(
+                                                "PORTED",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 7,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 0.2,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -337,6 +673,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                           );
                   }),
                 ),
+
                 SizedBox(height: 15),
                 SizedBox(
                   height: 40,
@@ -1140,5 +1477,3 @@ class _RechargeScreenState extends State<RechargeScreen> {
     );
   }
 }
-
-//......................................................................................

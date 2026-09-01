@@ -1,32 +1,95 @@
 import 'package:get/get.dart';
 
-import '../models/country_list_model.dart';
-import '../models/loan_balance_model.dart';
 import '../models/notifications_model.dart';
-import '../services/loan_balance_service.dart';
 import '../services/notification_service.dart';
 
 class NotificationController extends GetxController {
-  var isLoading = false.obs;
-  RxInt unreadlength = 0.obs;
+  final NotificationApi notificationApi = NotificationApi();
 
-  var allnotificationlist = NotificationModel().obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isMarkingAsRead = false.obs;
 
-  void fetchData() async {
+  final RxInt unreadlength = 0.obs;
+
+  final Rx<NotificationModel> allnotificationlist = NotificationModel().obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  Future<void> fetchData() async {
+    if (isLoading.value) return;
+
     try {
-      isLoading(true);
+      isLoading.value = true;
 
-      final value = await NotificationApi().fetchnotificationData();
+      final value = await notificationApi.fetchnotificationData();
+
       allnotificationlist.value = value;
 
-      // ✅ calculate unread count safely
-      final notifications = allnotificationlist.value.data?.notifications ?? [];
-
-      unreadlength.value = notifications.where((n) => n.isRead == false).length;
+      _calculateUnreadCount();
     } catch (e) {
-      print(e.toString());
+      print("Notification fetch error: $e");
     } finally {
-      isLoading(false);
+      isLoading.value = false;
     }
+  }
+
+  void _calculateUnreadCount() {
+    final notifications = allnotificationlist.value.data?.notifications ?? [];
+
+    unreadlength.value = notifications
+        .where((notification) => notification.isRead == false)
+        .length;
+  }
+
+  Future<bool> markAsRead(int? notificationId) async {
+    if (notificationId == null) {
+      print("Notification ID is null");
+      return false;
+    }
+
+    if (isMarkingAsRead.value) {
+      return false;
+    }
+
+    try {
+      isMarkingAsRead.value = true;
+
+      final success = await notificationApi.markNotificationAsRead(
+        notificationId,
+      );
+
+      if (success) {
+        await fetchData();
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      print("Mark notification as read error: $e");
+      return false;
+    } finally {
+      isMarkingAsRead.value = false;
+    }
+  }
+
+  bool isNotificationUnread(int? notificationId) {
+    if (notificationId == null) return false;
+
+    final notifications = allnotificationlist.value.data?.notifications ?? [];
+
+    for (final notification in notifications) {
+      if (notification.id == notificationId) {
+        return notification.isRead == false;
+      }
+    }
+
+    return false;
+  }
+
+  Future<void> refreshNotifications() async {
+    await fetchData();
   }
 }

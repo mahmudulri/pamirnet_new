@@ -430,7 +430,9 @@ class _OrdersState extends State<Orders> {
                                             height: 80,
                                           ),
                                           Text(
-                                            "No Data found",
+                                            languagesController.tr(
+                                              "NO_DATA_FOUND",
+                                            ),
                                             style: TextStyle(
                                               fontFamily:
                                                   box

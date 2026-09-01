@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pamirnet/global_controller/fcm_device_token_controller.dart';
 import 'package:pamirnet/global_controller/page_controller.dart';
 import 'package:pamirnet/pages/network.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -498,11 +499,17 @@ class LogoutDialogBox extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         signInController.usernameController.clear();
                         signInController.passwordController.clear();
 
                         box.remove("userToken");
+
+                        final FcmDeviceTokenController fcmController =
+                            Get.find<FcmDeviceTokenController>();
+
+                        final bool tokenDisabled = await fcmController
+                            .disableTokenBeforeLogout();
 
                         Get.to(() => SignInScreen());
                       },

@@ -58,39 +58,37 @@ class _CreditTransferState extends State<CreditTransfer> {
 
   CurrencyController currencyController = Get.put(CurrencyController());
 
-  Future<void> refresh() async {
+  Future<void> _refreshHistory() async {
+    customhistoryController.finalList.clear();
+    customhistoryController.initialpage = 1;
+    await customhistoryController.fetchHistory();
+  }
+
+  Future<void> _loadMoreHistory() async {
+    if (!scrollController.hasClients ||
+        customhistoryController.isLoading.value) {
+      return;
+    }
+
     final int totalPages =
         customhistoryController
             .allorderlist
             .value
             .payload
-            ?.pagination!
-            .totalPages ??
+            ?.pagination
+            ?.totalPages ??
         0;
+
     final int currentPage = customhistoryController.initialpage;
 
-    // Prevent loading more pages if we've reached the last page
-    if (currentPage >= totalPages) {
-      print(
-        "End..........................................End.....................",
-      );
+    if (totalPages == 0 || currentPage >= totalPages) {
       return;
     }
 
-    // Check if the scroll position is at the bottom
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
+    if (scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent - 100) {
       customhistoryController.initialpage++;
-
-      // Prevent fetching if the next page exceeds total pages
-      if (customhistoryController.initialpage <= totalPages) {
-        print("Load More...................");
-        customhistoryController.fetchHistory();
-      } else {
-        customhistoryController.initialpage =
-            totalPages; // Reset to the last valid page
-        print("Already on the last page");
-      }
+      await customhistoryController.fetchHistory();
     }
   }
 
@@ -119,7 +117,15 @@ class _CreditTransferState extends State<CreditTransfer> {
     customhistoryController.finalList.clear();
     customhistoryController.initialpage = 1;
     customhistoryController.fetchHistory();
-    scrollController.addListener(refresh);
+    scrollController.addListener(_loadMoreHistory);
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(_loadMoreHistory);
+    scrollController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -918,8 +924,9 @@ class _CreditTransferState extends State<CreditTransfer> {
                                       false &&
                                   customhistoryController.finalList.isNotEmpty
                               ? RefreshIndicator(
-                                  onRefresh: refresh,
+                                  onRefresh: _refreshHistory,
                                   child: ListView.builder(
+                                    controller: scrollController,
                                     shrinkWrap: true,
                                     physics: BouncingScrollPhysics(),
                                     itemCount: customhistoryController

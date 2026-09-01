@@ -8,9 +8,6 @@ class ProvinceApi {
   final box = GetStorage();
   Future<ProvincesModel> fetchProvince() async {
     final url = Uri.parse(ApiEndPoints.publicUrl + "provinces");
-    // final url = Uri.parse(
-    //   "https://app-api-vpro-tt.taktelcom.com/api/public/provinces",
-    // );
 
     var response = await http.get(
       url,

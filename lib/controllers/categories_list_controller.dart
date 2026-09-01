@@ -43,6 +43,8 @@ class NewCategorisListController extends GetxController {
                 service.company?.country?.countryFlagImageUrl;
             final String? phoneNumberLength =
                 service.company?.country?.phoneNumberLength;
+            final bool enableOperatorLookup =
+                service.company?.country?.enableOperatorLookup ?? false;
 
             if (countryName != null && countryId != null) {
               // Initialize entry for this country if not exists
@@ -51,6 +53,7 @@ class NewCategorisListController extends GetxController {
                   'country_id': countryId,
                   'countryImage': countryImage,
                   'phone_number_length': phoneNumberLength,
+                  'enable_operator_lookup': enableOperatorLookup,
                   'categories': <int, dynamic>{},
                 };
               });
@@ -64,6 +67,7 @@ class NewCategorisListController extends GetxController {
                   'country_id': countryId,
                   'countryImage': countryImage,
                   'phone_number_length': phoneNumberLength,
+                  'enable_operator_lookup': enableOperatorLookup,
                 };
               });
             }
@@ -76,6 +80,8 @@ class NewCategorisListController extends GetxController {
         final int? countryId = countryValue['country_id'];
         final String? countryImage = countryValue['countryImage'];
         final String? phoneNumberLength = countryValue['phone_number_length'];
+        final bool enableOperatorLookup =
+            countryValue['enable_operator_lookup'] ?? false;
         final Map<int, dynamic> categories =
             countryValue['categories'] as Map<int, dynamic>;
 
@@ -85,6 +91,7 @@ class NewCategorisListController extends GetxController {
             'countryId': countryId,
             'countryImage': countryImage,
             'phoneNumberLength': phoneNumberLength,
+            'enable_operator_lookup': enableOperatorLookup,
             'categoryId': categoryId,
             'categoryName': categoryValue['categoryName'],
           });

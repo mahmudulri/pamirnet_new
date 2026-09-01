@@ -1,4 +1,4 @@
-package com.pamirnet2.woosat
+package com.woosat.pamirtelecom
 
 import io.flutter.embedding.android.FlutterActivity
 

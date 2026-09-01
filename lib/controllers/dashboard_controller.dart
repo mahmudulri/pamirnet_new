@@ -6,7 +6,7 @@ import '../models/dashboard_data_model.dart';
 class DashboardController extends GetxController {
   @override
   void onInit() {
-    fetchDashboardData();
+    // fetchDashboardData();
     super.onInit();
   }
 

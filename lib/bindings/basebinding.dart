@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:pamirnet/controllers/add_sub_reseller_controller.dart';
 import 'package:pamirnet/controllers/confirm_pin_controller.dart';
 import 'package:pamirnet/controllers/custom_history_controller.dart';
+import 'package:pamirnet/controllers/history_controller.dart';
 import 'package:pamirnet/controllers/order_list_controller.dart';
 import 'package:pamirnet/controllers/subreseller_details_controller.dart';
 import '../controllers/bundle_controller.dart';
@@ -45,7 +46,9 @@ class Basebinding implements Bindings {
     Get.lazyPut<SliderController>(() => SliderController());
     Get.lazyPut<BundleController>(() => BundleController());
     Get.lazyPut<ConfirmPinController>(() => ConfirmPinController());
+    Get.lazyPut<HistoryController>(() => HistoryController());
     Get.lazyPut<CustomHistoryController>(() => CustomHistoryController());
+
     Get.lazyPut<HawalaListController>(() => HawalaListController());
     Get.lazyPut<CommissionGroupController>(() => CommissionGroupController());
     Get.lazyPut<HawalaCurrencyController>(() => HawalaCurrencyController());

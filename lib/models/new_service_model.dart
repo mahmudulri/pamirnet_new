@@ -158,6 +158,7 @@ class Country {
   final String? languageId;
   final String? countryTelecomCode;
   final String? phoneNumberLength;
+  final bool? enableOperatorLookup;
 
   Country({
     this.id,
@@ -166,6 +167,7 @@ class Country {
     this.languageId,
     this.countryTelecomCode,
     this.phoneNumberLength,
+    this.enableOperatorLookup,
   });
 
   factory Country.fromJson(Map<String, dynamic> json) => Country(
@@ -181,6 +183,9 @@ class Country {
     phoneNumberLength: json["phone_number_length"] == null
         ? null
         : json["phone_number_length"],
+    enableOperatorLookup: json["enable_operator_lookup"] == null
+        ? null
+        : json["enable_operator_lookup"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -190,5 +195,6 @@ class Country {
     "language_id": languageId,
     "country_telecom_code": countryTelecomCode,
     "phone_number_length": phoneNumberLength,
+    "enable_operator_lookup": enableOperatorLookup,
   };
 }

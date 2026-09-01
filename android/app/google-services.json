@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "764160983678",
+    "project_id": "pamirnet-bb3e8",
+    "storage_bucket": "pamirnet-bb3e8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764160983678:android:8eb959732563a9ba7b8e2f",
+        "android_client_info": {
+          "package_name": "com.woosat.pamirtelecom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAu7KcHuoNwaH6_ql53rjW46f6i4lXrFHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

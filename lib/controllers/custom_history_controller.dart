@@ -10,7 +10,7 @@ class CustomHistoryController extends GetxController {
 
   var allorderlist = CustomHistoryModel().obs;
 
-  void fetchHistory() async {
+  Future<void> fetchHistory() async {
     try {
       isLoading(true);
       await CustomRechargeHistoryApi().fetchcustomhistory(initialpage).then((
