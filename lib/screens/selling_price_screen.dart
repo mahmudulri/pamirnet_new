@@ -551,7 +551,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                  Icon(
+                                                                  FaIcon(
                                                                     FontAwesomeIcons
                                                                         .chevronDown,
                                                                     size:
@@ -652,7 +652,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                                                       Colors
                                                                           .white,
                                                                   child: Center(
-                                                                    child: Icon(
+                                                                    child: FaIcon(
                                                                       FontAwesomeIcons
                                                                           .chevronDown,
                                                                       size: 14,

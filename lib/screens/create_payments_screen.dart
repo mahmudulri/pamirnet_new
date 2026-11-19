@@ -183,7 +183,7 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
                                   ),
                                 ),
                               ),
-                              Icon(
+                              FaIcon(
                                 FontAwesomeIcons.chevronDown,
                                 color: Colors.grey,
                                 size: 20,
@@ -443,7 +443,7 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
                           ),
-                          icon: Icon(
+                          icon: FaIcon(
                             FontAwesomeIcons.chevronDown,
                             color: Colors.grey,
                             size: 20, // larger icon to match others

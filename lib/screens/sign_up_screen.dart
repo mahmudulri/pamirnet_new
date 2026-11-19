@@ -299,7 +299,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 backgroundColor: AppColors.primaryColor
                                     .withOpacity(0.7),
                                 radius: 18,
-                                child: const Icon(
+                                child: const FaIcon(
                                   FontAwesomeIcons.chevronDown,
                                   color: Colors.white,
                                   size: 17,
@@ -454,7 +454,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 backgroundColor: AppColors.primaryColor
                                     .withOpacity(0.7),
                                 radius: 18,
-                                child: const Icon(
+                                child: const FaIcon(
                                   FontAwesomeIcons.chevronDown,
                                   color: Colors.white,
                                   size: 17,
@@ -587,7 +587,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 backgroundColor: AppColors.primaryColor
                                     .withOpacity(0.7),
                                 radius: 18,
-                                child: const Icon(
+                                child: const FaIcon(
                                   FontAwesomeIcons.chevronDown,
                                   color: Colors.white,
                                   size: 17,
@@ -719,7 +719,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 backgroundColor: AppColors.primaryColor
                                     .withOpacity(0.7),
                                 radius: 18,
-                                child: const Icon(
+                                child: const FaIcon(
                                   FontAwesomeIcons.chevronDown,
                                   color: Colors.white,
                                   size: 17,

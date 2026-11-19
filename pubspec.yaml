@@ -3,7 +3,7 @@ description: "A new Flutter project."
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.0.8+9
 
 environment:
   sdk: ^3.10.1
@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  font_awesome_flutter: ^10.8.0
+  font_awesome_flutter: ^11.0.0
   flutter_inner_shadow: ^0.0.1
   dotted_line: ^3.2.2
   get: ^4.7.3

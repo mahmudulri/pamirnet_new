@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pamirnet/controllers/history_controller.dart';
 import 'package:pamirnet/services/firebase_notification_service.dart';
+import 'controllers/app_setting_controller.dart';
+import 'controllers/support_controller.dart';
 import 'global_controller/network_checker.dart';
 import 'global_controller/font_controller.dart';
 import 'global_controller/time_zone_controller.dart';
@@ -32,6 +34,10 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  Get.put(SupportController(), permanent: true);
+  Get.put(AppSettingController(), permanent: true);
+
   await GetStorage.init();
 
   await Firebase.initializeApp();

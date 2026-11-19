@@ -562,7 +562,7 @@ class _CreateGroupBoxState extends State<CreateGroupBox> {
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
                   ),
-                  icon: Icon(
+                  icon: FaIcon(
                     FontAwesomeIcons.chevronDown,
                     size: screenHeight * 0.018,
                     color: Colors.grey,
@@ -961,7 +961,7 @@ class _UpdateGroupBoxState extends State<UpdateGroupBox> {
                     child: CircleAvatar(
                       radius: 17,
                       backgroundColor: AppColors.primaryColor,
-                      child: Icon(
+                      child: FaIcon(
                         FontAwesomeIcons.chevronDown,
                         size: screenHeight * 0.018,
                         color: Colors.white,

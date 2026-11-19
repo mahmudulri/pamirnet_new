@@ -356,7 +356,7 @@ class _AddNewUserState extends State<AddNewUser> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
-                    icon: const Icon(
+                    icon: const FaIcon(
                       FontAwesomeIcons.chevronDown,
                       color: Colors.grey,
                       size: 20,
@@ -483,7 +483,7 @@ class _AddNewUserState extends State<AddNewUser> {
                       contentPadding: EdgeInsets.zero,
                     ),
 
-                    icon: const Icon(
+                    icon: const FaIcon(
                       FontAwesomeIcons.chevronDown,
                       color: Colors.grey,
                       size: 20,
@@ -587,7 +587,7 @@ class _AddNewUserState extends State<AddNewUser> {
                       contentPadding: EdgeInsets.zero,
                     ),
 
-                    icon: const Icon(
+                    icon: const FaIcon(
                       FontAwesomeIcons.chevronDown,
                       color: Colors.grey,
                       size: 20,
@@ -691,7 +691,7 @@ class _AddNewUserState extends State<AddNewUser> {
                       contentPadding: EdgeInsets.zero,
                     ),
 
-                    icon: const Icon(
+                    icon: const FaIcon(
                       FontAwesomeIcons.chevronDown,
                       color: Colors.grey,
                       size: 20,

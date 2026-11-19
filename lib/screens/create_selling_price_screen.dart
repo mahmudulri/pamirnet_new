@@ -204,7 +204,7 @@ class _CreateSellingPriceScreenState extends State<CreateSellingPriceScreen> {
                     ),
 
                     // keep your icon style
-                    icon: Icon(
+                    icon: FaIcon(
                       FontAwesomeIcons.chevronDown,
                       size: 17,
                       color: Colors.grey,
@@ -292,7 +292,7 @@ class _CreateSellingPriceScreenState extends State<CreateSellingPriceScreen> {
                       radius: 22,
                       backgroundColor: Colors.white,
                       child: Center(
-                        child: Icon(FontAwesomeIcons.chevronDown, size: 14),
+                        child: FaIcon(FontAwesomeIcons.chevronDown, size: 14),
                       ),
                     ),
                   ),

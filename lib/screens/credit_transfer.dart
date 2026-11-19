@@ -743,7 +743,7 @@ class _CreditTransferState extends State<CreditTransfer> {
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              icon: Icon(
+                              icon: FaIcon(
                                 FontAwesomeIcons.chevronDown,
                                 color: Colors.grey,
                               ),
@@ -1046,7 +1046,7 @@ class _CreditTransferState extends State<CreditTransfer> {
                                                             MainAxisSize.min,
                                                         children: [
                                                           SizedBox(width: 5),
-                                                          Icon(
+                                                          FaIcon(
                                                             FontAwesomeIcons
                                                                 .chevronDown,
                                                             size:
@@ -1349,7 +1349,7 @@ class _CreditTransferState extends State<CreditTransfer> {
                                                           MainAxisSize.min,
                                                       children: [
                                                         SizedBox(width: 5),
-                                                        Icon(
+                                                        FaIcon(
                                                           FontAwesomeIcons
                                                               .chevronDown,
                                                           size:
